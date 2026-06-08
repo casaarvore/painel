@@ -153,6 +153,42 @@ a{color:var(--ciano)}
 .intro{font-size:.9rem;color:var(--cinza);max-width:74ch;margin:0 0 16px}
 .codigo{font-weight:700;color:var(--roxo)}
 .medalha{font-weight:700;color:var(--laranja);font-variant-numeric:tabular-nums}
+
+/* Gráfico de crescimento */
+.crescimento-chart{display:flex;flex-direction:column;gap:10px;padding:4px 0}
+.cresc-row{display:grid;grid-template-columns:160px 1fr 1fr 70px 60px;align-items:center;gap:8px;font-size:.82rem}
+.cresc-row.header{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--cinza);font-weight:700;padding-bottom:4px;border-bottom:1px solid var(--linha)}
+.cresc-row .terr{font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cresc-row .barra-wrap{display:flex;align-items:center;gap:6px}
+.cresc-row .barra-label{font-size:.75rem;color:var(--cinza);min-width:26px;text-align:right;font-variant-numeric:tabular-nums}
+.cresc-row .track-g{flex:1;background:#f1ece4;border-radius:6px;height:16px;overflow:hidden}
+.cresc-row .fill-g{height:100%;border-radius:6px;transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.cresc-row .delta{text-align:right;font-weight:700;font-variant-numeric:tabular-nums;font-size:.82rem}
+.cresc-row .delta.pos{color:#1a7a4a}
+.cresc-row .delta.zero{color:var(--cinza)}
+.cresc-row .delta.neg{color:#b02a2a}
+.cresc-row .atual{text-align:right;font-weight:700;color:var(--roxo);font-variant-numeric:tabular-nums}
+@media(max-width:640px){.cresc-row{grid-template-columns:110px 1fr 1fr 50px 50px}}
+
+/* Tabela comparativa histórico */
+.hist-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.hist-table th{background:#f6f1ea;text-align:left;padding:9px 12px;font-weight:700;color:var(--roxo-escuro);font-size:.74rem;text-transform:uppercase;letter-spacing:.03em;border-bottom:2px solid var(--linha)}
+.hist-table td{padding:9px 12px;border-bottom:1px solid #f1ece4;vertical-align:middle}
+.hist-table tr:hover td{background:#fcf9f4}
+.delta-chip{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.delta-chip.pos{background:rgba(26,122,74,.12);color:#1a7a4a}
+.delta-chip.zero{background:#efeae2;color:var(--cinza)}
+.delta-chip.neg{background:rgba(176,42,42,.12);color:#b02a2a}
+
+/* Ícone de informação */
+.info-btn{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:rgba(91,43,130,.12);color:var(--roxo);font-size:.72rem;font-weight:700;cursor:pointer;border:none;font-family:inherit;flex:none;vertical-align:middle;margin-left:6px;transition:.15s}
+.info-btn:hover{background:var(--roxo);color:#fff}
+.info-popup{position:fixed;z-index:200;background:#fff;border:1px solid var(--linha);border-radius:14px;box-shadow:0 8px 32px rgba(54,32,78,.18);padding:18px 20px;max-width:380px;font-size:.82rem;line-height:1.55;color:var(--ink)}
+.info-popup h4{margin:0 0 10px;font-family:Fraunces,serif;font-size:1rem;color:var(--roxo)}
+.info-popup ul{margin:8px 0 0;padding-left:18px}
+.info-popup li{margin-bottom:5px}
+.info-popup .fechar{position:absolute;top:10px;right:12px;background:none;border:none;font-size:1rem;cursor:pointer;color:var(--cinza)}
+.info-popup[hidden]{display:none}
 </style>
 </head>
 <body>
@@ -189,6 +225,47 @@ a{color:var(--ciano)}
   </div>
 
   <div class="kpis" id="kpis"></div>
+
+  <!-- Popup de informação metodológica -->
+  <div class="info-popup" id="infoPopup" hidden>
+    <button class="fechar" onclick="document.getElementById('infoPopup').hidden=true" title="Fechar">&times;</button>
+    <h4>Como os dados são calculados</h4>
+    <p><strong>Participantes válidos:</strong> cada participante é identificado pelo e-mail. Quando um mesmo e-mail aparece em mais de um arquivo de território, mantém-se apenas o registro com maior número de cursos concluídos (deduplicação). Registros com e-mails de teste (ex.: teste@teste.com.br) são excluídos por padrão.</p>
+    <ul>
+      <li><strong>Cursos concluídos:</strong> soma do campo <em>CoursesCompleted</em> de cada participante válido.</li>
+      <li><strong>Certificados:</strong> soma do campo <em>CertificatesReceived</em>.</li>
+      <li><strong>% conclusão média:</strong> média aritmética do <em>CourseCompletionPercentage</em> de cada participante (0–100%).</li>
+      <li><strong>Com ≥1 conclusão:</strong> participantes com pelo menos 1 curso concluído.</li>
+      <li><strong>Catálogo por território:</strong> maior valor de <em>CoursesRegistered</em> entre os participantes do território (representa os cursos disponíveis na trilha).</li>
+      <li><strong>% engajamento (município):</strong> razão entre concluintes (participantes com ≥1 conclusão) e total de participantes do município.</li>
+      <li><strong>Crescimento:</strong> diferença entre o total de participantes válidos na extração atual e na extração anterior (01/06/2026).</li>
+    </ul>
+  </div>
+
+  <section>
+    <div class="titulo">
+      <h2>Crescimento de participantes por território
+        <button class="info-btn" id="infoBtnCrescent" title="Como é calculado">i</button>
+      </h2>
+      <div class="barra"></div>
+    </div>
+    <div class="card">
+      <p class="desc" style="margin-bottom:16px">Comparação entre as extrações de <strong>01/06/2026</strong> e <strong>08/06/2026</strong>. As barras mostram o volume atual; o delta indica novos participantes na semana.</p>
+      <div class="crescimento-chart" id="crescimentoChart"></div>
+      <div style="margin-top:20px;overflow:auto">
+        <table class="hist-table" id="histTable">
+          <thead><tr>
+            <th>Território</th>
+            <th style="text-align:right">01/06/2026</th>
+            <th style="text-align:right">08/06/2026</th>
+            <th style="text-align:right">Variação</th>
+            <th style="text-align:right">Crescimento</th>
+          </tr></thead>
+          <tbody id="histTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
 
   <section>
     <div class="titulo"><h2>Comparação entre territórios</h2><div class="barra"></div></div>
@@ -730,7 +807,102 @@ function renderCategorias(){
   });
 }
 
+// ---------- Histórico de crescimento ----------
+const HISTORICO = [
+  {territorio:'Ceará',           ant:3,   atu:3},
+  {territorio:'Maranhão',        ant:20,  atu:22},
+  {territorio:'Pernambuco',      ant:6,   atu:8},
+  {territorio:'Rio Grande do Norte', ant:94,  atu:139},
+  {territorio:'Roraima',         ant:9,   atu:10},
+];
+
+function renderCrescimento(){
+  const maxAtu = Math.max(...HISTORICO.map(h=>h.atu), 1);
+  const chart = document.getElementById('crescimentoChart');
+  // Cabeçalho
+  chart.innerHTML = '<div class="cresc-row header">'
+    +'<span class="terr">Território</span>'
+    +'<span>01/06/2026</span>'
+    +'<span>08/06/2026</span>'
+    +'<span class="delta">Novos</span>'
+    +'<span class="atual">Total</span>'
+    +'</div>';
+  HISTORICO.slice().sort((a,b)=>b.atu-a.atu).forEach(h=>{
+    const delta = h.atu - h.ant;
+    const dc = delta > 0 ? 'pos' : delta < 0 ? 'neg' : 'zero';
+    const ds = delta > 0 ? '+'+delta : String(delta);
+    const w1 = (h.ant/maxAtu*100).toFixed(1);
+    const w2 = (h.atu/maxAtu*100).toFixed(1);
+    chart.innerHTML += '<div class="cresc-row">'
+      +'<span class="terr" title="'+h.territorio+'">'+h.territorio+'</span>'
+      +'<span class="barra-wrap"><span class="barra-label">'+h.ant+'</span><span class="track-g"><span class="fill-g" style="width:'+w1+'%;background:rgba(91,43,130,.35)"></span></span></span>'
+      +'<span class="barra-wrap"><span class="barra-label">'+h.atu+'</span><span class="track-g"><span class="fill-g" style="width:'+w2+'%;background:var(--roxo)"></span></span></span>'
+      +'<span class="delta '+dc+'">'+ds+'</span>'
+      +'<span class="atual">'+h.atu+'</span>'
+      +'</div>';
+  });
+  // Linha de total
+  const totAnt = HISTORICO.reduce((s,h)=>s+h.ant,0);
+  const totAtu = HISTORICO.reduce((s,h)=>s+h.atu,0);
+  const totDelta = totAtu - totAnt;
+  chart.innerHTML += '<div class="cresc-row" style="border-top:2px solid var(--linha);margin-top:6px;padding-top:8px;font-weight:700">'
+    +'<span class="terr">Total geral</span>'
+    +'<span class="barra-wrap"><span class="barra-label" style="color:var(--ink);font-weight:700">'+totAnt+'</span><span class="track-g"></span></span>'
+    +'<span class="barra-wrap"><span class="barra-label" style="color:var(--ink);font-weight:700">'+totAtu+'</span><span class="track-g"></span></span>'
+    +'<span class="delta pos">+'+totDelta+'</span>'
+    +'<span class="atual">'+totAtu+'</span>'
+    +'</div>';
+
+  // Tabela histórica
+  const tbody = document.getElementById('histTableBody');
+  const rows = HISTORICO.slice().sort((a,b)=>b.atu-a.atu);
+  tbody.innerHTML = rows.map(h=>{
+    const delta = h.atu - h.ant;
+    const dc = delta>0?'pos':delta<0?'neg':'zero';
+    const ds = delta>0?'+'+delta:String(delta);
+    const pct = h.ant>0 ? ((delta/h.ant)*100).toFixed(0)+'%' : '—';
+    return '<tr>'
+      +'<td><b>'+h.territorio+'</b></td>'
+      +'<td style="text-align:right">'+h.ant+'</td>'
+      +'<td style="text-align:right"><b>'+h.atu+'</b></td>'
+      +'<td style="text-align:right"><span class="delta-chip '+dc+'">'+ds+'</span></td>'
+      +'<td style="text-align:right;color:var(--cinza)">'+pct+'</td>'
+      +'</tr>';
+  }).join('');
+  // Linha de total
+  const totD = totAtu - totAnt;
+  const totDc = totD>0?'pos':totD<0?'neg':'zero';
+  const totDs = totD>0?'+'+totD:String(totD);
+  const totPct = totAnt>0?((totD/totAnt)*100).toFixed(0)+'%':'—';
+  tbody.innerHTML += '<tr style="font-weight:700;border-top:2px solid var(--linha)">'
+    +'<td>Total geral</td>'
+    +'<td style="text-align:right">'+totAnt+'</td>'
+    +'<td style="text-align:right">'+totAtu+'</td>'
+    +'<td style="text-align:right"><span class="delta-chip '+totDc+'">'+totDs+'</span></td>'
+    +'<td style="text-align:right;color:var(--cinza)">'+totPct+'</td>'
+    +'</tr>';
+}
+
+// Popup de informação
+document.getElementById('infoBtnCrescent').addEventListener('click', function(e){
+  const popup = document.getElementById('infoPopup');
+  if(popup.hidden){
+    const r = e.target.getBoundingClientRect();
+    popup.style.top = (r.bottom + window.scrollY + 8)+'px';
+    popup.style.left = Math.max(8, Math.min(r.left, window.innerWidth - 400))+'px';
+    popup.hidden = false;
+  } else {
+    popup.hidden = true;
+  }
+  e.stopPropagation();
+});
+document.addEventListener('click', function(e){
+  const popup = document.getElementById('infoPopup');
+  if(!popup.hidden && !popup.contains(e.target)) popup.hidden = true;
+});
+
 // Inicializar
+renderCrescimento();
 atualizar();
 </script>
 </body>
