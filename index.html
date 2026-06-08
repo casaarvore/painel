@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sumário - Casa Árvore Painel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,700&family=Archivo:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --laranja: #EF7D1A;
+            --amarelo: #F9B233;
+            --roxo: #5B2B82;
+            --ciano: #1BA8C5;
+            --roxo-escuro: #36204e;
+            --ink: #2a1c3d;
+            --cinza: #6c6478;
+            --fundo: #FBF8F3;
+        }
+        body {
+            font-family: 'Archivo', sans-serif;
+            background-color: var(--fundo);
+            color: var(--ink);
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        h1 {
+            font-family: 'Fraunces', serif;
+            color: var(--roxo-escuro);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .subtitle {
+            color: var(--cinza);
+            font-size: 1.1rem;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        .list-group {
+            list-style: none;
+            padding: 0;
+        }
+        .list-item {
+            border-bottom: 1px solid #eee;
+            padding: 1rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .list-item:last-child {
+            border-bottom: none;
+        }
+        .file-link {
+            text-decoration: none;
+            color: var(--roxo);
+            font-weight: 600;
+            font-size: 1.2rem;
+            transition: color 0.2s;
+        }
+        .file-link:hover {
+            color: var(--laranja);
+        }
+        .file-date {
+            color: var(--cinza);
+            font-size: 0.9rem;
+        }
+        footer {
+            margin-top: 3rem;
+            font-size: 0.8rem;
+            color: var(--cinza);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Casa Árvore</h1>
+        <p class="subtitle">Sumário do Painel de Arquivos</p>
+    </header>
+    
+    <div class="container">
+        <ul class="list-group">
+            <li class="list-item">
+                <a href="20260608.html" class="file-link">Painel 08/06/2026</a>
+                <span class="file-date">8 de Junho de 2026</span>
+            </li>
+            <li class="list-item">
+                <a href="20260603.html" class="file-link">Painel 03/06/2026</a>
+                <span class="file-date">3 de Junho de 2026</span>
+            </li>
+            <li class="list-item">
+                <a href="20260601.html" class="file-link">Painel 01/06/2026</a>
+                <span class="file-date">1 de Junho de 2026</span>
+            </li>
+        </ul>
+    </div>
+
+    <footer>
+        &copy; 2026 Casa Árvore - Territórios Conectados
+    </footer>
+</body>
+</html>
