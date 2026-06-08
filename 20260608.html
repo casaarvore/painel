@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel de cursos · Territórios Conectados</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --laranja:#EF7D1A;
+  --amarelo:#F9B233;
+  --roxo:#5B2B82;
+  --ciano:#1BA8C5;
+  --roxo-escuro:#36204e;
+  --ink:#2a1c3d;
+  --cinza:#6c6478;
+  --linha:#e7e0d6;
+  --fundo:#FBF8F3;
+  --cartao:#ffffff;
+  --sombra:0 1px 2px rgba(54,32,78,.06),0 8px 24px rgba(54,32,78,.06);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;font-family:'Archivo',system-ui,sans-serif;color:var(--ink);
+  background:var(--fundo);
+  background-image:radial-gradient(circle at 12% -5%,rgba(249,178,51,.10),transparent 38%),
+                   radial-gradient(circle at 92% 0%,rgba(27,168,197,.10),transparent 40%);
+  line-height:1.5;-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px 80px}
+
+/* Cabeçalho */
+header{padding:34px 0 26px}
+.marca{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.logo-grid{display:grid;grid-template-columns:repeat(2,22px);grid-template-rows:repeat(2,22px);gap:4px;flex:none}
+.logo-grid span{border-radius:6px}
+.logo-grid span:nth-child(1){background:var(--laranja)}
+.logo-grid span:nth-child(2){background:var(--amarelo)}
+.logo-grid span:nth-child(3){background:var(--roxo)}
+.logo-grid span:nth-child(4){background:var(--ciano)}
+h1{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(1.7rem,3.4vw,2.5rem);margin:0;letter-spacing:-.01em;line-height:1.05}
+.sub{color:var(--cinza);font-size:.95rem;margin-top:6px;max-width:62ch}
+.tag{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--linha);border-radius:999px;padding:5px 13px;font-size:.78rem;color:var(--roxo);font-weight:600;margin-top:14px}
+.tag b{color:var(--laranja)}
+
+/* Barra de filtros */
+.filtros{position:sticky;top:0;z-index:30;background:rgba(251,248,243,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--linha);margin:0 -24px 26px;padding:14px 24px}
+.filtros-inner{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;max-width:1240px;margin:0 auto}
+.campo{display:flex;flex-direction:column;gap:4px}
+.campo label{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--cinza);font-weight:600}
+.campo select,.campo input{font-family:inherit;font-size:.88rem;padding:8px 11px;border:1px solid var(--linha);border-radius:9px;background:#fff;color:var(--ink);min-width:150px;outline:none}
+.campo select:focus,.campo input:focus{border-color:var(--ciano);box-shadow:0 0 0 3px rgba(27,168,197,.15)}
+.campo input{min-width:200px}
+.botao{font-family:inherit;font-weight:600;font-size:.84rem;padding:9px 16px;border-radius:9px;border:1px solid var(--roxo);background:var(--roxo);color:#fff;cursor:pointer;transition:.15s}
+.botao:hover{background:var(--roxo-escuro)}
+.botao.sec{background:#fff;color:var(--roxo)}
+.botao.sec:hover{background:#f5f0fa}
+.toggle{display:flex;align-items:center;gap:7px;font-size:.8rem;color:var(--cinza);cursor:pointer;user-select:none;padding-bottom:9px}
+.toggle input{accent-color:var(--ciano);width:15px;height:15px}
+
+/* KPIs */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:14px;margin-bottom:30px}
+.kpi{background:var(--cartao);border:1px solid var(--linha);border-radius:16px;padding:18px 18px 16px;box-shadow:var(--sombra);position:relative;overflow:hidden}
+.kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c,var(--ciano))}
+.kpi .v{font-family:'Fraunces',serif;font-weight:600;font-size:2.05rem;line-height:1;letter-spacing:-.02em}
+.kpi .l{font-size:.78rem;color:var(--cinza);margin-top:7px;font-weight:500}
+
+/* Seções e cartões */
+section{margin-bottom:34px}
+.titulo{display:flex;align-items:baseline;gap:12px;margin:0 0 16px}
+.titulo h2{font-family:'Fraunces',serif;font-weight:600;font-size:1.32rem;margin:0;letter-spacing:-.01em}
+.titulo .barra{height:3px;flex:1;background:linear-gradient(90deg,var(--linha),transparent);border-radius:2px;align-self:center}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media(max-width:860px){.grid2,.grid3{grid-template-columns:1fr}}
+.card{background:var(--cartao);border:1px solid var(--linha);border-radius:16px;padding:20px;box-shadow:var(--sombra)}
+.card h3{font-size:.92rem;font-weight:700;margin:0 0 4px;color:var(--ink)}
+.card .desc{font-size:.78rem;color:var(--cinza);margin:0 0 16px}
+
+/* Barras horizontais */
+.bar-row{display:grid;grid-template-columns:1fr;gap:9px}
+.bar{display:grid;grid-template-columns:130px 1fr 46px;align-items:center;gap:10px;font-size:.82rem}
+.bar .nome{color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+.bar .track{background:#f1ece4;border-radius:7px;height:18px;overflow:hidden}
+.bar .fill{height:100%;border-radius:7px;transition:width .9s cubic-bezier(.2,.8,.2,1);min-width:2px}
+.bar .num{text-align:right;font-weight:600;color:var(--roxo);font-variant-numeric:tabular-nums}
+@media(max-width:520px){.bar{grid-template-columns:96px 1fr 40px}}
+
+/* Donut */
+.donut-wrap{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.donut-wrap svg{flex:none}
+.legenda{display:flex;flex-direction:column;gap:8px;font-size:.82rem}
+.legenda .it{display:flex;align-items:center;gap:8px}
+.legenda .pt{width:12px;height:12px;border-radius:3px;flex:none}
+.legenda .lab{color:var(--ink)}
+.legenda .val{color:var(--cinza);margin-left:auto;font-variant-numeric:tabular-nums;font-weight:600;padding-left:14px}
+
+/* Tabelas */
+.tabela-wrap{background:var(--cartao);border:1px solid var(--linha);border-radius:16px;box-shadow:var(--sombra);overflow:hidden}
+.tabela-scroll{overflow:auto;max-height:560px}
+table{border-collapse:collapse;width:100%;font-size:.82rem}
+thead th{position:sticky;top:0;background:#f6f1ea;text-align:left;padding:11px 13px;font-weight:700;color:var(--roxo-escuro);white-space:nowrap;cursor:pointer;user-select:none;border-bottom:2px solid var(--linha);font-size:.76rem;text-transform:uppercase;letter-spacing:.03em}
+thead th:hover{background:#efe7dc}
+thead th .seta{opacity:.4;font-size:.7rem;margin-left:3px}
+tbody td{padding:10px 13px;border-bottom:1px solid #f1ece4;vertical-align:top}
+tbody tr:hover{background:#fcf9f4}
+.pct-cell{display:flex;align-items:center;gap:8px;min-width:120px}
+.mini-track{flex:1;height:7px;background:#f1ece4;border-radius:4px;overflow:hidden;min-width:46px}
+.mini-fill{height:100%;border-radius:4px}
+.chip{display:inline-block;font-size:.7rem;padding:2px 8px;border-radius:999px;background:#f0ebf5;color:var(--roxo);font-weight:600;white-space:nowrap}
+.chip.cert{background:rgba(27,168,197,.14);color:#0c6b80}
+.chip.teste{background:rgba(239,125,26,.16);color:#9a4d05}
+.email{color:var(--cinza);font-size:.76rem}
+.escola-cell{max-width:280px;font-size:.78rem;color:var(--cinza)}
+.caption{padding:13px 16px;font-size:.78rem;color:var(--cinza);border-bottom:1px solid var(--linha);background:#fbf9f5;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.caption b{color:var(--ink)}
+.vazio{padding:48px;text-align:center;color:var(--cinza)}
+
+footer{margin-top:50px;padding-top:22px;border-top:1px solid var(--linha);font-size:.78rem;color:var(--cinza);max-width:72ch}
+footer b{color:var(--roxo)}
+.legenda-fonte{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.legenda-fonte span{background:#fff;border:1px solid var(--linha);border-radius:7px;padding:4px 9px;font-size:.72rem}
+a{color:var(--ciano)}
+
+/* Abas */
+.abas{display:flex;gap:6px;border-bottom:1px solid var(--linha);margin-bottom:24px;flex-wrap:wrap}
+.abas button{font-family:inherit;font-size:.92rem;font-weight:600;color:var(--cinza);background:none;border:none;border-bottom:3px solid transparent;padding:12px 18px;cursor:pointer;margin-bottom:-1px;transition:.15s;border-radius:8px 8px 0 0}
+.abas button:hover{color:var(--ink);background:#fff8ef}
+.abas button.ativa{color:var(--roxo);border-bottom-color:var(--laranja)}
+.aba[hidden]{display:none}
+
+/* Níveis de atenção */
+.nivel{display:inline-block;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.nivel.critico{background:rgba(214,69,69,.14);color:#b02a2a}
+.nivel.baixo{background:rgba(239,125,26,.16);color:#9a4d05}
+.nivel.moderado{background:rgba(249,178,51,.20);color:#8a6310}
+.nivel.bom{background:rgba(27,168,197,.16);color:#0c6b80}
+.nivel.sem{background:#efeae2;color:#6c6478}
+
+.alerta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-bottom:8px}
+.alerta{border:1px solid var(--linha);border-left:5px solid var(--c,#b02a2a);border-radius:14px;padding:16px 16px 14px;background:#fff;box-shadow:var(--sombra)}
+.alerta .mun{font-family:'Fraunces',serif;font-weight:600;font-size:1.05rem;margin-bottom:2px}
+.alerta .uf{font-size:.74rem;color:var(--cinza);font-weight:600}
+.alerta .txt{font-size:.82rem;color:var(--ink);margin-top:9px;line-height:1.45}
+.alerta .txt b{color:var(--c,#b02a2a)}
+
+.destaque-troca{display:inline-flex;background:#f3eef8;border-radius:999px;padding:3px;margin-bottom:14px;gap:3px}
+.destaque-troca button{font-family:inherit;font-size:.82rem;font-weight:600;color:var(--roxo);background:none;border:none;padding:7px 15px;border-radius:999px;cursor:pointer}
+.destaque-troca button.ativa{background:var(--roxo);color:#fff}
+.intro{font-size:.9rem;color:var(--cinza);max-width:74ch;margin:0 0 16px}
+.codigo{font-weight:700;color:var(--roxo)}
+.medalha{font-weight:700;color:var(--laranja);font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="marca">
+      <div class="logo-grid"><span></span><span></span><span></span><span></span></div>
+      <div>
+        <h1>Painel de cursos</h1>
+        <div class="sub">Engajamento e progresso dos participantes nas formações da plataforma, organizados por território, perfil e escola.</div>
+      </div>
+    </div>
+    <div class="tag">Territórios Conectados · extração de <b>08/06/2026</b></div>
+  </header>
+
+  <nav class="abas">
+    <button class="ativa" data-aba="aba1">Panorama</button>
+    <button data-aba="aba2">Pontos de atenção e destaques</button>
+    <button data-aba="aba3">Acessos e conclusões por categoria</button>
+  </nav>
+
+  <div class="aba" id="aba1">
+  <div class="filtros">
+    <div class="filtros-inner">
+      <div class="campo"><label for="fEstado">Território (estado)</label><select id="fEstado"><option value="">Todos os territórios</option><option>Ceará</option><option>Maranhão</option><option>Pernambuco</option><option>Rio Grande do Norte</option><option>Roraima</option></select></div>
+      <div class="campo"><label for="fCidade">Município</label><select id="fCidade"><option value="">Todos os municípios</option><option>Alcântara</option><option>Bequimão</option><option>Betânia</option><option>Boa Vista</option><option>Bonfim</option><option>Cantá</option><option>Caucaia</option><option>Cerro Corá</option><option>Extremoz</option><option>Lagoa de Velhos</option><option>Pacaraima</option><option>Pedro Avelino</option><option>Touros</option><option>Uiramutã</option></select></div>
+      <div class="campo"><label for="fFuncao">Função</label><select id="fFuncao"><option value="">Todas as funções</option><option>Convidado (a)</option><option>Equipe da rede de ensino</option><option>Equipe de suporte</option><option>Estudante</option><option>Gestor/coordenador escolar</option><option>Professor(a)</option></select></div>
+      <div class="campo"><label for="fGenero">Gênero</label><select id="fGenero"><option value="">Todos</option><option>Feminino</option><option>Masculino</option></select></div>
+      <div class="campo"><label for="fRaca">Cor/raça</label><select id="fRaca"><option value="">Todas</option><option>Amarela</option><option>Branca</option><option>Indigena</option><option>Parda</option><option>Preta</option></select></div>
+      <div class="campo"><label for="fBusca">Buscar escola ou município</label><input id="fBusca" type="text" placeholder="Digite para filtrar…"></div>
+      <label class="toggle"><input type="checkbox" id="fTeste"> incluir registros de teste</label>
+      <button class="botao sec" id="limpar">Limpar filtros</button>
+    </div>
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <section>
+    <div class="titulo"><h2>Comparação entre territórios</h2><div class="barra"></div></div>
+    <div class="tabela-wrap">
+      <div class="tabela-scroll">
+        <table id="tabEstados">
+          <thead><tr>
+            <th data-k="estado">Território<span class="seta">↕</span></th>
+            <th data-k="n">Participantes<span class="seta">▼</span></th>
+            <th data-k="catalogo">Cursos no catálogo<span class="seta">↕</span></th>
+            <th data-k="concluidos">Cursos concluídos<span class="seta">↕</span></th>
+            <th data-k="certificados">Certificados<span class="seta">↕</span></th>
+            <th data-k="engajPct">% com ≥1 conclusão<span class="seta">↕</span></th>
+            <th data-k="pctMedio">Conclusão média<span class="seta">↕</span></th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="titulo"><h2>Perfil dos participantes</h2><div class="barra"></div></div>
+    <div class="grid2">
+      <div class="card"><h3>Por função</h3><p class="desc">Um participante pode acumular mais de uma função; cada uma é contabilizada.</p><div class="bar-row" id="cFuncao"></div></div>
+      <div class="card"><h3>Por gênero</h3><p class="desc">Distribuição autodeclarada.</p><div class="donut-wrap"><div id="cGenero"></div></div></div>
+      <div class="card"><h3>Por cor/raça</h3><p class="desc">Distribuição autodeclarada.</p><div class="bar-row" id="cRaca"></div></div>
+      <div class="card"><h3>Por vínculo profissional</h3><p class="desc">Vínculo com a rede ou organização.</p><div class="bar-row" id="cVinculo"></div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="titulo"><h2>Engajamento e conclusão</h2><div class="barra"></div></div>
+    <div class="grid2">
+      <div class="card"><h3>Cursos concluídos por participante</h3><p class="desc">Quantidade de participantes em cada faixa de conclusões.</p><div class="bar-row" id="cDistConcl"></div></div>
+      <div class="card"><h3>Faixa de percentual de conclusão do percurso</h3><p class="desc">Percentual do catálogo concluído por participante.</p><div class="bar-row" id="cFaixaPct"></div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="titulo"><h2>Detalhe por escola</h2><div class="barra"></div></div>
+    <div class="tabela-wrap">
+      <div class="caption"><span>Escolas e instituições com participantes inscritos.</span><span id="capEscolas"></span></div>
+      <div class="tabela-scroll">
+        <table id="tabEscolas">
+          <thead><tr>
+            <th data-k="escola">Escola / instituição<span class="seta">↕</span></th>
+            <th data-k="cidade">Município<span class="seta">↕</span></th>
+            <th data-k="estado">Estado<span class="seta">↕</span></th>
+            <th data-k="n">Participantes<span class="seta">▼</span></th>
+            <th data-k="concluidos">Concluídos<span class="seta">↕</span></th>
+            <th data-k="certificados">Certificados<span class="seta">↕</span></th>
+            <th data-k="pctMedio">Conclusão média<span class="seta">↕</span></th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="titulo"><h2>Participantes</h2><div class="barra"></div></div>
+    <p class="intro">Lista nominal completa. Clique nos cabeçalhos para ordenar.</p>
+    <div class="tabela-wrap">
+      <div class="caption"><span id="capPart"></span></div>
+      <div class="tabela-scroll">
+        <table id="tabPart">
+          <thead><tr>
+            <th data-k="id">Participante<span class="seta">↕</span></th>
+            <th data-k="estado">Território<span class="seta">↕</span></th>
+            <th data-k="cidade">Município<span class="seta">↕</span></th>
+            <th data-k="escola">Escola<span class="seta">↕</span></th>
+            <th data-k="funcao">Função<span class="seta">↕</span></th>
+            <th data-k="genero">Gênero<span class="seta">↕</span></th>
+            <th data-k="raca">Cor/raça<span class="seta">↕</span></th>
+            <th data-k="pct">% conclusão<span class="seta">↕</span></th>
+            <th data-k="concluidos">Concl.<span class="seta">▼</span></th>
+            <th data-k="certificados">Cert.<span class="seta">↕</span></th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+  </div><!-- /aba1 -->
+
+  <div class="aba" id="aba2" hidden>
+    <section>
+      <div class="titulo"><h2>Pontos de atenção por município</h2><div class="barra"></div></div>
+      <p class="intro">Municípios com baixo ou nenhum engajamento, ou com catálogo ainda não liberado. Os alertas abaixo destacam situações que requerem ação imediata.</p>
+      <div class="alerta-grid" id="alertas"></div>
+      <div class="tabela-wrap" style="margin-top:18px">
+        <div class="caption"><span>Situação de engajamento por município. Clique nos cabeçalhos para ordenar.</span></div>
+        <div class="tabela-scroll">
+          <table id="tabAtencao">
+            <thead><tr>
+              <th data-k="cidade">Município<span class="seta">↕</span></th>
+              <th data-k="estado">Estado<span class="seta">↕</span></th>
+              <th data-k="n">Participantes<span class="seta">↕</span></th>
+              <th data-k="catalogo">Catálogo<span class="seta">↕</span></th>
+              <th data-k="concluintes">Concluintes<span class="seta">↕</span></th>
+              <th data-k="concluidos">Conclusões<span class="seta">↕</span></th>
+              <th data-k="certificados">Certificados<span class="seta">↕</span></th>
+              <th data-k="engajPct">% engajamento<span class="seta">▲</span></th>
+              <th data-k="nivel">Nível<span class="seta">↕</span></th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="titulo"><h2>Destaques</h2><div class="barra"></div></div>
+      <p class="intro">Participantes e escolas com melhor desempenho na conclusão das formações. Em conformidade com a LGPD, cada participante é identificado por código anônimo, escola, município e função; os nomes não são exibidos.</p>
+      <div class="destaque-troca">
+        <button class="ativa" data-dest="prof">Professores em destaque</button>
+        <button data-dest="gest">Gestores em destaque</button>
+        <button data-dest="esc">Escolas em destaque</button>
+      </div>
+      <div id="destSumario" class="intro" style="margin-bottom:12px"></div>
+      <div class="tabela-wrap">
+        <div class="caption"><span id="capDest"></span></div>
+        <div class="tabela-scroll"><div id="destTabela"></div></div>
+      </div>
+    </section>
+  </div><!-- /aba2 -->
+
+  <div class="aba" id="aba3" hidden>
+    <section>
+      <div class="titulo"><h2>Acessos e conclusões por categoria de curso</h2><div class="barra"></div></div>
+      <p class="intro">Dados agregados por categoria de curso na plataforma. Importante: este conjunto reflete o uso global da plataforma de formação, com escopo distinto das demais abas, que tratam exclusivamente dos participantes dos territórios do projeto. Aqui, "matrículas" corresponde ao total de inscrições em cursos (Course Enrolment), e o percentual de conclusão é a razão entre conclusões e matrículas em cada categoria.</p>
+      <div class="kpis" id="kpisCat"></div>
+      <div class="grid2" style="margin-top:6px">
+        <div class="card"><h3>Matrículas por categoria</h3><p class="desc">Volume de inscrições em cursos, por categoria.</p><div class="bar-row" id="cCatMatriculas"></div></div>
+        <div class="card"><h3>Conclusões por categoria</h3><p class="desc">Total de conclusões de curso, por categoria.</p><div class="bar-row" id="cCatConclusoes"></div></div>
+      </div>
+      <div class="tabela-wrap" style="margin-top:18px">
+        <div class="caption"><span>Detalhamento por categoria. Clique nos cabeçalhos para ordenar.</span><span id="capCat"></span></div>
+        <div class="tabela-scroll">
+          <table id="tabCat">
+            <thead><tr>
+              <th data-k="categoria">Categoria<span class="seta">↕</span></th>
+              <th data-k="cursos">Nº de cursos<span class="seta">↕</span></th>
+              <th data-k="matriculas">Matrículas<span class="seta">▼</span></th>
+              <th data-k="conclusoes">Conclusões<span class="seta">↕</span></th>
+              <th data-k="pct">% de conclusão<span class="seta">↕</span></th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div><!-- /aba3 -->
+
+  <footer>
+    <p>Fonte: extração da plataforma de formação (<b>Learning Passport / Territórios Conectados</b>), arquivos por território de <b>08/06/2026</b>. Em conformidade com a LGPD, nomes e e-mails foram suprimidos do painel e do próprio arquivo; cada participante é identificado por um código sequencial anônimo. Os indicadores agregados consideram os registros válidos; registros de teste evidentes são sinalizados e, por padrão, excluídos das estatísticas (use o seletor acima para incluí-los). As abas de pontos de atenção e destaques refletem a base completa de registros válidos, independentemente dos filtros da aba Panorama.</p>
+  </footer>
+</div>
+
+<script>
+const DADOS = [{"id": 1, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "CENTRO MUNICIPAL DE EDUCACAO INFANTIL JARNIELE ALVES DA SILVA - CMEI - 24084697", "genero": "Feminino", "raca": "Branca", "pct": 67.65, "concluidos": 23, "media": 87.5, "inscritos": 34, "certificados": 21, "teste": false}, {"id": 2, "estado": "Roraima", "cidade": "Uiramutã", "funcoes": ["Professor(a)"], "vinculos": ["Não aplicavel"], "escola": "São Sebastiao do Caila EEI", "genero": "Feminino", "raca": "Parda", "pct": 32.0, "concluidos": 8, "media": 0.0, "inscritos": 25, "certificados": 8, "teste": false}, {"id": 3, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "E M CONEGO ANTONIO ANTAS - 24028215", "genero": "Feminino", "raca": "Parda", "pct": 11.76, "concluidos": 4, "media": 66.7, "inscritos": 34, "certificados": 1, "teste": false}, {"id": 4, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Equipe de suporte"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "Secretaria Municipal de Educacao - Pedro Avelino", "genero": "Feminino", "raca": "Parda", "pct": 11.76, "concluidos": 4, "media": 0.0, "inscritos": 34, "certificados": 1, "teste": false}, {"id": 5, "estado": "Maranhão", "cidade": "Bequimão", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL JOSEFA AMBROSIA BOAES - 21003084", "genero": "Feminino", "raca": "Branca", "pct": 50.0, "concluidos": 4, "media": 100.0, "inscritos": 8, "certificados": 0, "teste": false}, {"id": 6, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL BELMIRA VIANA - 24028711", "genero": "Feminino", "raca": "Branca", "pct": 11.76, "concluidos": 4, "media": 87.1, "inscritos": 34, "certificados": 1, "teste": false}, {"id": 7, "estado": "Maranhão", "cidade": "Bequimão", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL PROTAZIA RODRIGUES SOARES - 21003033", "genero": "Feminino", "raca": "Parda", "pct": 50.0, "concluidos": 4, "media": 100.0, "inscritos": 8, "certificados": 0, "teste": false}, {"id": 8, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Equipe da rede de ensino"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL MANOEL BELMINO DOS SANTOS - 24028541", "genero": "Feminino", "raca": "Amarela", "pct": 8.82, "concluidos": 3, "media": 87.87, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 9, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "E M CONEGO ANTONIO ANTAS - 24028215", "genero": "Masculino", "raca": "Branca", "pct": 8.82, "concluidos": 3, "media": 0.0, "inscritos": 34, "certificados": 2, "teste": false}, {"id": 10, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "UNIDADE ESCOLAR IV BOM JESUS - 24073580", "genero": "Masculino", "raca": "Parda", "pct": 8.82, "concluidos": 3, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 11, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "CRECHE MANUTENCAO NOSSA SENHORA DA CONCEICAO - 24027910", "genero": "Feminino", "raca": "Branca", "pct": 8.82, "concluidos": 3, "media": 0.0, "inscritos": 34, "certificados": 1, "teste": false}, {"id": 12, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Equipe de suporte"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL BELMIRA VIANA - 24028711", "genero": "Feminino", "raca": "Branca", "pct": 8.82, "concluidos": 3, "media": 85.44, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 13, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "E M CONEGO ANTONIO ANTAS - 24028215", "genero": "Feminino", "raca": "Branca", "pct": 5.88, "concluidos": 2, "media": 0.0, "inscritos": 34, "certificados": 1, "teste": false}, {"id": 14, "estado": "Pernambuco", "cidade": "Betânia", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Outra rede de ensino"], "escola": "GRUPO ESC MUL ANA FREIRE DE CALDAS - 26025884", "genero": "Feminino", "raca": "Branca", "pct": 18.18, "concluidos": 2, "media": 81.44, "inscritos": 11, "certificados": 0, "teste": false}, {"id": 15, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL BELMIRA VIANA - 24028711", "genero": "Feminino", "raca": "Branca", "pct": 5.88, "concluidos": 2, "media": 96.88, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 16, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "EM RAIMUNDO CAVALCANTI ENSINO FUNDAMENTAL - 24028231", "genero": "Masculino", "raca": "Preta", "pct": 5.88, "concluidos": 2, "media": 57.66, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 17, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "E M CONEGO ANTONIO ANTAS - 24028215", "genero": "Feminino", "raca": "Parda", "pct": 5.88, "concluidos": 2, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 18, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "EM PRES CASTELO BRANCO ENSINO FUNDAMENTAL - 24028193", "genero": "Feminino", "raca": "Parda", "pct": 5.88, "concluidos": 2, "media": 100.0, "inscritos": 34, "certificados": 1, "teste": false}, {"id": 19, "estado": "Rio Grande do Norte", "cidade": "Lagoa de Velhos", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "EM ABEL AQUINO DE SOUZA - 24040860", "genero": "Feminino", "raca": "Preta", "pct": 5.88, "concluidos": 2, "media": 59.16, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 20, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL MANOEL BELMINO DOS SANTOS - 24028541", "genero": "Masculino", "raca": "Branca", "pct": 2.94, "concluidos": 1, "media": 0.0, "inscritos": 34, "certificados": 1, "teste": false}, {"id": 21, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Equipe de suporte"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL BELMIRA VIANA - 24028711", "genero": "Feminino", "raca": "Parda", "pct": 2.94, "concluidos": 1, "media": 51.67, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 22, "estado": "Maranhão", "cidade": "Alcântara", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "BARÃO DE GRAJAÚ EM – 21000476", "genero": "Masculino", "raca": "Preta", "pct": 6.67, "concluidos": 1, "media": 0.0, "inscritos": 15, "certificados": 1, "teste": false}, {"id": 23, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL BELMIRA VIANA - 24028711", "genero": "Feminino", "raca": "Branca", "pct": 2.94, "concluidos": 1, "media": 50.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 24, "estado": "Maranhão", "cidade": "Bequimão", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "UNIDADE INTEGRADA CENTRINHO DE SANTANA - 21002622", "genero": "Masculino", "raca": "Parda", "pct": 12.5, "concluidos": 1, "media": 0.0, "inscritos": 8, "certificados": 0, "teste": false}, {"id": 25, "estado": "Maranhão", "cidade": "Bequimão", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL PROTAZIA RODRIGUES SOARES - 21003033", "genero": "Feminino", "raca": "Parda", "pct": 12.5, "concluidos": 1, "media": 100.0, "inscritos": 8, "certificados": 0, "teste": false}, {"id": 26, "estado": "Rio Grande do Norte", "cidade": "Extremoz", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "CRECHE MUNICIPAL MANAIM - 24083640", "genero": "Feminino", "raca": "Parda", "pct": 2.94, "concluidos": 1, "media": 91.67, "inscritos": 34, "certificados": 1, "teste": false}, {"id": 27, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "UNIDADE XI SAO JOAO - 24028240", "genero": "Feminino", "raca": "Preta", "pct": 2.94, "concluidos": 1, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 28, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL CORONEL RUBENS PEREIRA - 24028479", "genero": "Masculino", "raca": "Branca", "pct": 2.94, "concluidos": 1, "media": 0.0, "inscritos": 34, "certificados": 1, "teste": false}, {"id": 29, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "E M CONEGO ANTONIO ANTAS - 24028215", "genero": "Feminino", "raca": "Branca", "pct": 2.94, "concluidos": 1, "media": 0.0, "inscritos": 34, "certificados": 1, "teste": false}, {"id": 30, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "CENTRO MUNICIPAL DE EDUCACAO INFANTIL JARNIELE ALVES DA SILVA - CMEI - 24084697", "genero": "Feminino", "raca": "Parda", "pct": 2.94, "concluidos": 1, "media": 83.35, "inscritos": 34, "certificados": 1, "teste": false}, {"id": 31, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Outra rede de ensino"], "escola": "EM PRES CASTELO BRANCO ENSINO FUNDAMENTAL - 24028193", "genero": "Feminino", "raca": "Parda", "pct": 2.94, "concluidos": 1, "media": 100.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 32, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL MANOEL BELMINO DOS SANTOS - 24028541", "genero": "Feminino", "raca": "Parda", "pct": 2.94, "concluidos": 1, "media": 100.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 33, "estado": "Rio Grande do Norte", "cidade": "Extremoz", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESC MUL ANTONIO FABRICIO CARIDADE - 24056472", "genero": "Feminino", "raca": "Parda", "pct": 2.94, "concluidos": 1, "media": 100.0, "inscritos": 34, "certificados": 1, "teste": false}, {"id": 34, "estado": "Rio Grande do Norte", "cidade": "Lagoa de Velhos", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "EM SAO SEBASTIAO - 24040932", "genero": "Feminino", "raca": "Amarela", "pct": 2.94, "concluidos": 1, "media": 92.1, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 35, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Outra rede de ensino"], "escola": "EM PRES CASTELO BRANCO ENSINO FUNDAMENTAL - 24028193", "genero": "Feminino", "raca": "Parda", "pct": 2.94, "concluidos": 1, "media": 66.7, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 36, "estado": "Roraima", "cidade": "Boa Vista", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA DE FORMACAO DE PROFESSORES DE BOA VISTA - 14009358", "genero": "Feminino", "raca": "Preta", "pct": 4.0, "concluidos": 1, "media": 0.0, "inscritos": 25, "certificados": 1, "teste": false}, {"id": 37, "estado": "Roraima", "cidade": "Boa Vista", "funcoes": ["Equipe de suporte"], "vinculos": ["Organização Social"], "escola": "ESCOLA ESTADUAL INDIGENA LINO AUGUSTO DA SILVA - 14001594", "genero": "Feminino", "raca": "Branca", "pct": 4.0, "concluidos": 1, "media": 0.0, "inscritos": 25, "certificados": 1, "teste": false}, {"id": 38, "estado": "Roraima", "cidade": "Bonfim", "funcoes": ["Professor(a)", "Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "Outro(s) - Bonfim", "genero": "Masculino", "raca": "Indigena", "pct": 4.0, "concluidos": 1, "media": 0.0, "inscritos": 25, "certificados": 1, "teste": false}, {"id": 39, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL BELMIRA VIANA - 24028711", "genero": "Feminino", "raca": "Branca", "pct": 2.94, "concluidos": 1, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 40, "estado": "Rio Grande do Norte", "cidade": "Lagoa de Velhos", "funcoes": ["Professor(a)"], "vinculos": ["Outra rede de ensino"], "escola": "EM ABEL AQUINO DE SOUZA - 24040860", "genero": "Feminino", "raca": "Preta", "pct": 2.94, "concluidos": 1, "media": 100.0, "inscritos": 34, "certificados": 1, "teste": false}, {"id": 41, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "E M CONEGO ANTONIO ANTAS - 24028215", "genero": "Feminino", "raca": "Parda", "pct": 2.94, "concluidos": 1, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 42, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "UNIDADE XII MARIA DA CONCEICAO MARTINS - 24071366", "genero": "Masculino", "raca": "Parda", "pct": 2.94, "concluidos": 1, "media": 0.0, "inscritos": 34, "certificados": 1, "teste": false}, {"id": 43, "estado": "Pernambuco", "cidade": "Betânia", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUL MARIA DO SOCORRO ANDRADA - 26141663", "genero": "Masculino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 11, "certificados": 0, "teste": false}, {"id": 44, "estado": "Maranhão", "cidade": "Bequimão", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "UNIDADE INTEGRADA AREAL - 21002282", "genero": "Feminino", "raca": "Preta", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 8, "certificados": 0, "teste": false}, {"id": 45, "estado": "Maranhão", "cidade": "Bequimão", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto", "Não aplicavel"], "escola": "ESCOLA MUNICIPAL SOLANGE GUIMARAES PEREIRA - 21002169", "genero": "Masculino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 8, "certificados": 0, "teste": false}, {"id": 46, "estado": "Maranhão", "cidade": "Bequimão", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "UNIDADE INTEGRADA PARICATIUA - 21002630", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 8, "certificados": 0, "teste": false}, {"id": 47, "estado": "Maranhão", "cidade": "Bequimão", "funcoes": ["Professor(a)"], "vinculos": ["Outra rede de ensino"], "escola": "ESCOLA MUNICIPAL PROTAZIA RODRIGUES SOARES - 21003033", "genero": "Feminino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 8, "certificados": 0, "teste": false}, {"id": 48, "estado": "Maranhão", "cidade": "Bequimão", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "UNIDADE ESCOLAR ESTADO MINAS GERAIS - 21003050", "genero": "Feminino", "raca": "Amarela", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 8, "certificados": 0, "teste": false}, {"id": 49, "estado": "Maranhão", "cidade": "Bequimão", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "UNIDADE ESCOLAR ESTADO MINAS GERAIS - 21003050", "genero": "Feminino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 8, "certificados": 0, "teste": false}, {"id": 50, "estado": "Maranhão", "cidade": "Bequimão", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL MANOEL FERNANDES PINHEIRO - 21002428", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 8, "certificados": 0, "teste": false}, {"id": 51, "estado": "Maranhão", "cidade": "Bequimão", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "UNIDADE INTEGRADA CENTRINHO DE SANTANA - ANEXO SANTANA - 21001960", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 8, "certificados": 0, "teste": false}, {"id": 52, "estado": "Maranhão", "cidade": "Bequimão", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL JOSEFA AMBROSIA BOAES - 21003084", "genero": "Feminino", "raca": "Preta", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 8, "certificados": 0, "teste": false}, {"id": 53, "estado": "Maranhão", "cidade": "Bequimão", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "UNIDADE INTEGRADA PARICATIUA - 21002630", "genero": "Masculino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 8, "certificados": 0, "teste": false}, {"id": 54, "estado": "Maranhão", "cidade": "Alcântara", "funcoes": ["Equipe da rede de ensino", "Professor(a)", "Estudante", "Equipe de suporte", "Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "DUQUE DE CAXIAS EM", "genero": "Masculino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 15, "certificados": 0, "teste": false}, {"id": 55, "estado": "Maranhão", "cidade": "Bequimão", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "UNIDADE INTEGRADA AREAL - 21002282", "genero": "Feminino", "raca": "Preta", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 8, "certificados": 0, "teste": false}, {"id": 56, "estado": "Maranhão", "cidade": "Alcântara", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "VEREADOR JOAQUIM RIBEIRO EM – 21000905", "genero": "Masculino", "raca": "Preta", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 15, "certificados": 0, "teste": false}, {"id": 57, "estado": "Maranhão", "cidade": "Bequimão", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL MIGUEL MARTINS LEMOS - 21002479", "genero": "Feminino", "raca": "Preta", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 8, "certificados": 0, "teste": false}, {"id": 58, "estado": "Maranhão", "cidade": "Bequimão", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL PEDRO SILVA - 21003025", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 8, "certificados": 0, "teste": false}, {"id": 59, "estado": "Rio Grande do Norte", "cidade": "Extremoz", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESC MUL RAIMUNDA JOANA DO NASCIMENTO - 24056600", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 100.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 60, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "CENTRO MUNICIPAL DE EDUCACAO INFANTIL JARNIELE ALVES DA SILVA - CMEI - 24084697", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 61, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "Secretaria Municipal de Educacao - Cerro Corá", "genero": "Masculino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 62, "estado": "Rio Grande do Norte", "cidade": "Touros", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "EM VICENTE TAVARES DE LIRA - 24051950", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 63, "estado": "Rio Grande do Norte", "cidade": "Touros", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "EM PROF ESMERALDA FRANCA - 24051489", "genero": "Masculino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 71.13, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 64, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Equipe da rede de ensino"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL BELMIRA VIANA - 24028711", "genero": "Feminino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 65, "estado": "Rio Grande do Norte", "cidade": "Touros", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Outra rede de ensino"], "escola": "EM LUIZA CIRINO DA SILVA - 24052019", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 66, "estado": "Rio Grande do Norte", "cidade": "Extremoz", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto", "Outra rede de ensino"], "escola": "CRECHE MUNICIPAL DE CAMPINAS - 24339300", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 100.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 67, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Equipe da rede de ensino"], "vinculos": ["Outra rede de ensino"], "escola": "Outro(s) - Cerro Corá", "genero": "Feminino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 68, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL BELMIRA VIANA - 24028711", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 69, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "CRECHE MANUTENCAO NOSSA SENHORA DA CONCEICAO - 24027910", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 70, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Equipe da rede de ensino"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL BELMIRA VIANA - 24028711", "genero": "Feminino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 71, "estado": "Rio Grande do Norte", "cidade": "Extremoz", "funcoes": ["Equipe da rede de ensino", "Professor(a)"], "vinculos": [], "escola": "ESC MUL LUIZ ALVES - 24056545", "genero": "Feminino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 3, "certificados": 0, "teste": false}, {"id": 72, "estado": "Rio Grande do Norte", "cidade": "Extremoz", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "CRECHE MUNICIPAL MURICI - 24083631", "genero": "Masculino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 73, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Equipe da rede de ensino", "Equipe de suporte"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL AGNALDO DANTAS - 24028460", "genero": "Feminino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 74, "estado": "Rio Grande do Norte", "cidade": "Extremoz", "funcoes": ["Equipe da rede de ensino"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESC MUL LUIZ ALVES - 24056545", "genero": "Feminino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 75, "estado": "Pernambuco", "cidade": "Betânia", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Não aplicavel"], "escola": "CRECHE MUNICIPAL PROFESSORA EDELOURDES DE SOUZA - 26184133", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 11, "certificados": 0, "teste": false}, {"id": 76, "estado": "Ceará", "cidade": "Caucaia", "funcoes": ["Professor(a)"], "vinculos": ["Não aplicavel"], "escola": "Outro(s) - Caucaia", "genero": "Masculino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 0, "certificados": 0, "teste": true}, {"id": 77, "estado": "Ceará", "cidade": "Caucaia", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA INDIGENA TAPEBA DO TRILHO - 23215682", "genero": "Masculino", "raca": "Indigena", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 0, "certificados": 0, "teste": false}, {"id": 78, "estado": "Ceará", "cidade": "Caucaia", "funcoes": ["Equipe da rede de ensino"], "vinculos": ["Não aplicavel"], "escola": "CORONEL RAIMUNDO DE OLIVEIRA EEIEF - 23223227", "genero": "Feminino", "raca": "Amarela", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 0, "certificados": 0, "teste": false}, {"id": 79, "estado": "Rio Grande do Norte", "cidade": "Extremoz", "funcoes": ["Equipe da rede de ensino"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESC MUL LUIZ ALVES - 24056545", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 3, "certificados": 0, "teste": false}, {"id": 80, "estado": "Rio Grande do Norte", "cidade": "Extremoz", "funcoes": ["Equipe da rede de ensino"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "CENTRO DE ATIVIDADE COMPLEMENTAR - 24337307", "genero": "Masculino", "raca": "Preta", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 3, "certificados": 0, "teste": false}, {"id": 81, "estado": "Ceará", "cidade": "Caucaia", "funcoes": ["Professor(a)"], "vinculos": ["Organização Social"], "escola": "ESCOLA INDIGENA DIREITO DE APRENDER DO POVO ANACE - 23283610", "genero": "Masculino", "raca": "Indigena", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 0, "certificados": 0, "teste": false}, {"id": 82, "estado": "Pernambuco", "cidade": "Betânia", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Não aplicavel"], "escola": "GRUPO ESCOLAR MUL CICERO JOSE RODRIGUES - 26025671", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 11, "certificados": 0, "teste": false}, {"id": 83, "estado": "Pernambuco", "cidade": "Betânia", "funcoes": ["Professor(a)"], "vinculos": ["Organização Social"], "escola": "GR ESC MUL ANTONIO TEOTONIO DE SOUZA - 26025655", "genero": "Feminino", "raca": "Preta", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 11, "certificados": 0, "teste": false}, {"id": 84, "estado": "Maranhão", "cidade": "Bequimão", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL MANOEL FERNANDES PINHEIRO - 21002428", "genero": "Feminino", "raca": "Amarela", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 8, "certificados": 0, "teste": false}, {"id": 85, "estado": "Maranhão", "cidade": "Bequimão", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Não aplicavel"], "escola": "ESCOLA MUNICIPAL DOMINGOS BOUERES - 21229856", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 8, "certificados": 0, "teste": false}, {"id": 86, "estado": "Pernambuco", "cidade": "Betânia", "funcoes": ["Equipe de suporte"], "vinculos": ["Não aplicavel"], "escola": "CRECHE ANTONIA MARTINS DA C ARAUJO - 26025434", "genero": "Masculino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 11, "certificados": 0, "teste": false}, {"id": 87, "estado": "Pernambuco", "cidade": "Betânia", "funcoes": ["Equipe da rede de ensino"], "vinculos": ["Não aplicavel"], "escola": "Secretaria Municipal de Educacao - Betânia", "genero": "Feminino", "raca": "Preta", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 11, "certificados": 0, "teste": false}, {"id": 88, "estado": "Pernambuco", "cidade": "Betânia", "funcoes": ["Equipe de suporte"], "vinculos": ["Não aplicavel"], "escola": "ESCOLA MUNICIPAL MANOEL DE SOUZA - 26025477", "genero": "Masculino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 11, "certificados": 0, "teste": false}, {"id": 89, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "CRECHE MANUTENCAO NOSSA SENHORA DA CONCEICAO - 24027910", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 90, "estado": "Rio Grande do Norte", "cidade": "Extremoz", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESC MUL ABEL SOARES DE SOUZA - 24056464", "genero": "Feminino", "raca": "Amarela", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 91, "estado": "Rio Grande do Norte", "cidade": "Touros", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL JOSE ALEXANDRE DA SILVA - 24051829", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 92, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "EM PRES CASTELO BRANCO ENSINO FUNDAMENTAL - 24028193", "genero": "Feminino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 100.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 93, "estado": "Rio Grande do Norte", "cidade": "Touros", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL JEANNE MACHADO - 24051764", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 94, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "UNIDADE ESCOLAR V PAULO JOSE DE BRITO - 24071374", "genero": "Masculino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 95, "estado": "Rio Grande do Norte", "cidade": "Touros", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL DR ORLANDO FLAVIO JUNQUEIRA AYRES - 24051624", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 96, "estado": "Rio Grande do Norte", "cidade": "Extremoz", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "CRECHE NOVA EXTREMOZ - 24083658", "genero": "Feminino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 97, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "UNIDADE XII MARIA DA CONCEICAO MARTINS - 24071366", "genero": "Masculino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 98, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL MANOEL BELMINO DOS SANTOS - 24028541", "genero": "Masculino", "raca": "Preta", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 99, "estado": "Rio Grande do Norte", "cidade": "Touros", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "EM PROFESSORA MARIA CAROLINA DOS SANTOS - 24073598", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 100, "estado": "Rio Grande do Norte", "cidade": "Lagoa de Velhos", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "EM ABEL AQUINO DE SOUZA - 24040860", "genero": "Masculino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 101, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Professor(a)"], "vinculos": ["Não aplicavel"], "escola": "ESCOLA MUNICIPAL BELMIRA VIANA - 24028711", "genero": "Masculino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 102, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL BELMIRA VIANA - 24028711", "genero": "Masculino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 103, "estado": "Rio Grande do Norte", "cidade": "Lagoa de Velhos", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "EM SAO SEBASTIAO - 24040932", "genero": "Masculino", "raca": "Preta", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 104, "estado": "Rio Grande do Norte", "cidade": "Touros", "funcoes": ["Professor(a)"], "vinculos": ["Não aplicavel"], "escola": "EM DO ASSENTAMENTO CHICO MENDES - 24067806", "genero": "Masculino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 105, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "EM RAIMUNDO CAVALCANTI ENSINO FUNDAMENTAL - 24028231", "genero": "Masculino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 106, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Equipe da rede de ensino"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL MANOEL BELMINO DOS SANTOS - 24028541", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 107, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "E M CONEGO ANTONIO ANTAS - 24028215", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 108, "estado": "Rio Grande do Norte", "cidade": "Extremoz", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESC MUL VEREADOR RICARDO AFONSO DE LIMA - 24056626", "genero": "Masculino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 109, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "E M CONEGO ANTONIO ANTAS - 24028215", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 110, "estado": "Rio Grande do Norte", "cidade": "Touros", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "EM AGROVILA SANTO ANTONIO - 24066885", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 111, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "UNIDADE ESCOLAR III LIDIA MARIA CUNHA - 24028363", "genero": "Feminino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 112, "estado": "Rio Grande do Norte", "cidade": "Touros", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "EM DO ASSENTAMENTO CHICO MENDES - 24067806", "genero": "Feminino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 113, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "UNIDADE I MARIA ADELAIDE COSTA - 24064904", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 114, "estado": "Rio Grande do Norte", "cidade": "Touros", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "Outro(s) - Touros", "genero": "Masculino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 115, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "EM PRES CASTELO BRANCO ENSINO FUNDAMENTAL - 24028193", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 116, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Não aplicavel"], "escola": "EM NADIA MARIA CAMARA ENISNO FUNDAMENTAL - 24028142", "genero": "Masculino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 117, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL BELMIRA VIANA - 24028711", "genero": "Masculino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 118, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "CENTRO MUNICIPAL DE EDUCACAO INFANTIL JARNIELE ALVES DA SILVA - CMEI - 24084697", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 119, "estado": "Rio Grande do Norte", "cidade": "Touros", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "EM PROFESSORA ALTAIR DA SILVA FERREIRA - 24063428", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 120, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "E M CONEGO ANTONIO ANTAS - 24028215", "genero": "Masculino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 121, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "E M CONEGO ANTONIO ANTAS - 24028215", "genero": "Masculino", "raca": "Preta", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 122, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL BELMIRA VIANA - 24028711", "genero": "Feminino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 123, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Convidado (a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "UNIDADE ESCOLAR III LIDIA MARIA CUNHA - 24028363", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 124, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Equipe de suporte"], "vinculos": ["Outra rede de ensino"], "escola": "UNIDADE ESCOLAR V PAULO JOSE DE BRITO - 24071374", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 125, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL BELMIRA VIANA - 24028711", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 126, "estado": "Rio Grande do Norte", "cidade": "Extremoz", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESC MUL PEDRO FERNANDES - 24056588", "genero": "Masculino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 127, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "CRECHE MANUTENCAO NOSSA SENHORA DA CONCEICAO - 24027910", "genero": "Feminino", "raca": "Preta", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 128, "estado": "Rio Grande do Norte", "cidade": "Lagoa de Velhos", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "EM ABEL AQUINO DE SOUZA - 24040860", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 129, "estado": "Rio Grande do Norte", "cidade": "Extremoz", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESC MUL LUIZ ALVES - 24056545", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 100.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 130, "estado": "Rio Grande do Norte", "cidade": "Touros", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "CEMEI II - PROFESSORA ESMERALDA DE JESUS MORAIS - 24085626", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 131, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Equipe da rede de ensino"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL BELMIRA VIANA - 24028711", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 66.7, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 132, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL BELMIRA VIANA - 24028711", "genero": "Feminino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 133, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Professor(a)"], "vinculos": ["Não aplicavel"], "escola": "ESCOLA MUNICIPAL BELMIRA VIANA - 24028711", "genero": "Feminino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 134, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL BELMIRA VIANA - 24028711", "genero": "Feminino", "raca": "Preta", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 135, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Equipe da rede de ensino"], "vinculos": ["Não aplicavel"], "escola": "ESCOLA MUNICIPAL SEBASTIANA ALVES NOGA - 24028657", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 136, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Não aplicavel"], "escola": "EM NADIA MARIA CAMARA ENISNO FUNDAMENTAL - 24028142", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 137, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL BELMIRA VIANA - 24028711", "genero": "Feminino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 138, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "CENTRO MUNICIPAL DE EDUCACAO INFANTIL JARNIELE ALVES DA SILVA - CMEI - 24084697", "genero": "Feminino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 139, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "EM RAIMUNDO CAVALCANTI ENSINO FUNDAMENTAL - 24028231", "genero": "Masculino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 140, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL MANOEL BELMINO DOS SANTOS - 24028541", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 141, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "EM PRES CASTELO BRANCO ENSINO FUNDAMENTAL - 24028193", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 142, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "EM RAIMUNDO CAVALCANTI ENSINO FUNDAMENTAL - 24028231", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 83.35, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 143, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "CRECHE MANUTENCAO NOSSA SENHORA DA CONCEICAO - 24027910", "genero": "Feminino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 144, "estado": "Rio Grande do Norte", "cidade": "Extremoz", "funcoes": ["Professor(a)"], "vinculos": ["Outra rede de ensino", "Redes de ensino parceiras do projeto"], "escola": "CRECHE MUNICIPAL MANAIM - 24083640", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 145, "estado": "Rio Grande do Norte", "cidade": "Touros", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "EM MARIA DO CARMO RIBEIRO - 24051900", "genero": "Feminino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 146, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL BELMIRA VIANA - 24028711", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 147, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Professor(a)"], "vinculos": ["Não aplicavel"], "escola": "ESCOLA MUNICIPAL BELMIRA VIANA - 24028711", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 148, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "UNIDADE ESCOLAR III LIDIA MARIA CUNHA - 24028363", "genero": "Feminino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 100.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 149, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "CENTRO MUNICIPAL DE EDUCACAO INFANTIL JARNIELE ALVES DA SILVA - CMEI - 24084697", "genero": "Feminino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 100.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 150, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL BELMIRA VIANA - 24028711", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 151, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL BELMIRA VIANA - 24028711", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 152, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Equipe da rede de ensino"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL MANOEL BELMINO DOS SANTOS - 24028541", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 153, "estado": "Rio Grande do Norte", "cidade": "Extremoz", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "CRECHE MUNICIPAL MANAIM - 24083640", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 154, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "CENTRO MUNICIPAL DE EDUCACAO INFANTIL JARNIELE ALVES DA SILVA - CMEI - 24084697", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 155, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "E M CONEGO ANTONIO ANTAS - 24028215", "genero": "Masculino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 156, "estado": "Rio Grande do Norte", "cidade": "Touros", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "CENTRO MUNICIPAL DE ALFABETIZACAO - 24070637", "genero": "Feminino", "raca": "Preta", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 157, "estado": "Rio Grande do Norte", "cidade": "Extremoz", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESC MUL PROF VERA LUCIA GONCALVES - 24056596", "genero": "Feminino", "raca": "Preta", "pct": 0.0, "concluidos": 0, "media": 100.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 158, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "E M CONEGO ANTONIO ANTAS - 24028215", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 159, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "Outro(s) - Pedro Avelino", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 160, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "CRECHE MANUTENCAO NOSSA SENHORA DA CONCEICAO - 24027910", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 161, "estado": "Rio Grande do Norte", "cidade": "Touros", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "EM DE 1º GRAU JOAO JOAQUIM DA SILVA - 24051799", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 162, "estado": "Rio Grande do Norte", "cidade": "Extremoz", "funcoes": ["Equipe de suporte"], "vinculos": ["Outra rede de ensino"], "escola": "SITE SERVICO INTINERANTE DE TRABALHO EDUCACIONAL - 24337315", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 66.7, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 163, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Não aplicavel"], "escola": "EM NADIA MARIA CAMARA ENISNO FUNDAMENTAL - 24028142", "genero": "Masculino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 164, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Outra rede de ensino", "Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL AGNALDO DANTAS - 24028460", "genero": "Feminino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 165, "estado": "Rio Grande do Norte", "cidade": "Extremoz", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "CENTRO INFANTIL PROFESSORA LUCIANA FERREIRA DE MELO - 24090719", "genero": "Feminino", "raca": "Amarela", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 166, "estado": "Rio Grande do Norte", "cidade": "Touros", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA MUNICIPAL PROFESSORA MARIA JOSE PIMENTEL - 24051969", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 167, "estado": "Rio Grande do Norte", "cidade": "Touros", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "EM DE 1º GRAU JOAO JOAQUIM DA SILVA - 24051799", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 168, "estado": "Rio Grande do Norte", "cidade": "Touros", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "CEMEI PREFEITO CANDIDO EMIDIO DE FRANCA - 24084468", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 169, "estado": "Rio Grande do Norte", "cidade": "Extremoz", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESC MUL VEREADOR RICARDO AFONSO DE LIMA - 24056626", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 170, "estado": "Rio Grande do Norte", "cidade": "Extremoz", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Não aplicavel"], "escola": "EM EXPEDITO JOSE DA COSTA - 24056502", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 171, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "CENTRO MUNICIPAL DE EDUCACAO INFANTIL JARNIELE ALVES DA SILVA - CMEI - 24084697", "genero": "Feminino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 172, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "UNIDADE I MARIA ADELAIDE COSTA - 24064904", "genero": "Masculino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 173, "estado": "Rio Grande do Norte", "cidade": "Touros", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "EM MANOEL TARQUINO - 24051896", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 100.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 174, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Equipe de suporte"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "CENTRO MUNICIPAL DE EDUCACAO INFANTIL JARNIELE ALVES DA SILVA - CMEI - 24084697", "genero": "Feminino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 175, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "EM RAIMUNDO CAVALCANTI ENSINO FUNDAMENTAL - 24028231", "genero": "Masculino", "raca": "Preta", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 176, "estado": "Roraima", "cidade": "Cantá", "funcoes": ["Professor(a)"], "vinculos": ["Outra rede de ensino"], "escola": "Tuxaua Luiz Cadete EEI", "genero": "Masculino", "raca": "Indigena", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 25, "certificados": 0, "teste": false}, {"id": 177, "estado": "Rio Grande do Norte", "cidade": "Pedro Avelino", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "EM PRES CASTELO BRANCO ENSINO FUNDAMENTAL - 24028193", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 100.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 178, "estado": "Rio Grande do Norte", "cidade": "Cerro Corá", "funcoes": ["Gestor/coordenador escolar"], "vinculos": ["Não aplicavel"], "escola": "ESCOLA MUNICIPAL JOSE RODRIGUES DOS SANTOS - 24028533", "genero": "Masculino", "raca": "Branca", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 34, "certificados": 0, "teste": false}, {"id": 179, "estado": "Roraima", "cidade": "Boa Vista", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA ESTADUAL INDIGENA JOSE ALEIXO ANGELO - 14000644", "genero": "Masculino", "raca": "Indigena", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 25, "certificados": 0, "teste": false}, {"id": 180, "estado": "Roraima", "cidade": "Boa Vista", "funcoes": ["Professor(a)", "Equipe de suporte", "Equipe da rede de ensino", "Gestor/coordenador escolar"], "vinculos": ["Redes de ensino parceiras do projeto", "Outra rede de ensino", "Organização Social"], "escola": "CENTRO ESTADUAL DE EDUCACAO PROFISSIONAL PROFESSOR ANTONIO DE PINHO LIMA - 14327600", "genero": "Masculino", "raca": "Preta", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 25, "certificados": 0, "teste": false}, {"id": 181, "estado": "Roraima", "cidade": "Pacaraima", "funcoes": ["Professor(a)"], "vinculos": ["Outra rede de ensino"], "escola": "ESCOLA ESTADUAL INDIGENA GUILHERMINA FERNANDES - 14365715", "genero": "Masculino", "raca": "Indigena", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 25, "certificados": 0, "teste": false}, {"id": 182, "estado": "Roraima", "cidade": "Boa Vista", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA DE FORMACAO DE PROFESSORES DE BOA VISTA - 14009358", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 25, "certificados": 0, "teste": false}, {"id": 183, "estado": "Roraima", "cidade": "Boa Vista", "funcoes": ["Professor(a)"], "vinculos": ["Redes de ensino parceiras do projeto"], "escola": "ESCOLA DE FORMACAO DE PROFESSORES DE BOA VISTA - 14009358", "genero": "Feminino", "raca": "Parda", "pct": 0.0, "concluidos": 0, "media": 0.0, "inscritos": 25, "certificados": 0, "teste": false}];
+const CATEGORIAS = [{"categoria": "9 - Maués Conectado", "cursos": 21, "matriculas": 15394, "conclusoes": 431, "pct": 2.8}, {"categoria": "1 - Comece por aqui!", "cursos": 7, "matriculas": 8967, "conclusoes": 40, "pct": 0.45}, {"categoria": "8 - Sobre o Learning Passport", "cursos": 4, "matriculas": 5124, "conclusoes": 152, "pct": 2.97}, {"categoria": "2 - Cursos Temáticos de até 10h", "cursos": 11, "matriculas": 14091, "conclusoes": 145, "pct": 1.03}, {"categoria": "Tecnologias Digitais e Inovação", "cursos": 1, "matriculas": 5, "conclusoes": 0, "pct": 0.0}, {"categoria": "6 - EDs - Cultura e Identidade", "cursos": 49, "matriculas": 3473, "conclusoes": 47, "pct": 1.35}, {"categoria": "4 - EDs - Preservação das Culturas e Línguas Indígenas", "cursos": 7, "matriculas": 8967, "conclusoes": 17, "pct": 0.19}, {"categoria": "5 - EDs - Memórias Centenárias", "cursos": 8, "matriculas": 10248, "conclusoes": 23, "pct": 0.22}, {"categoria": "7 - EDs - Ambiente e Sustentabilidade", "cursos": 22, "matriculas": 28182, "conclusoes": 62, "pct": 0.22}, {"categoria": "3 - Cursos Temáticos de 20h a 60h", "cursos": 3, "matriculas": 3843, "conclusoes": 11, "pct": 0.29}, {"categoria": "Lab OPRINCE", "cursos": 8, "matriculas": 2, "conclusoes": 1, "pct": 50.0}, {"categoria": "Modelo de Curso/Treinamento", "cursos": 1, "matriculas": 0, "conclusoes": 0, "pct": 0.0}, {"categoria": "Formação LP", "cursos": 1, "matriculas": 41, "conclusoes": 39, "pct": 95.12}, {"categoria": "CEFORR - Roraima", "cursos": 1, "matriculas": 1281, "conclusoes": 0, "pct": 0.0}];
+
+// ---------- Filtros ----------
+const filtros = {estado:'',cidade:'',funcao:'',genero:'',raca:'',busca:'',teste:false};
+const ordEstados = {k:'n',dir:-1};
+const ordEscolas = {k:'n',dir:-1};
+const ordPart = {k:'concluidos',dir:-1};
+
+function norm(s){ return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase(); }
+function uniq(arr){ return [...new Set(arr)]; }
+const CORES = ['#5B2B82','#EF7D1A','#1BA8C5','#F9B233','#36204e','#6c6478'];
+function corPara(i){ return CORES[i % CORES.length]; }
+
+document.getElementById('fEstado').addEventListener('change', e=>{ filtros.estado=e.target.value; atualizar(); });
+document.getElementById('fCidade').addEventListener('change', e=>{ filtros.cidade=e.target.value; atualizar(); });
+document.getElementById('fFuncao').addEventListener('change', e=>{ filtros.funcao=e.target.value; atualizar(); });
+document.getElementById('fGenero').addEventListener('change', e=>{ filtros.genero=e.target.value; atualizar(); });
+document.getElementById('fRaca').addEventListener('change', e=>{ filtros.raca=e.target.value; atualizar(); });
+document.getElementById('fBusca').addEventListener('input', e=>{ filtros.busca=e.target.value; atualizar(); });
+document.getElementById('fTeste').addEventListener('change', e=>{ filtros.teste=e.target.checked; atualizar(); });
+document.getElementById('limpar').addEventListener('click', ()=>{
+  filtros.estado=''; filtros.cidade=''; filtros.funcao=''; filtros.genero=''; filtros.raca=''; filtros.busca=''; filtros.teste=false;
+  document.getElementById('fEstado').value='';
+  document.getElementById('fCidade').value='';
+  document.getElementById('fFuncao').value='';
+  document.getElementById('fGenero').value='';
+  document.getElementById('fRaca').value='';
+  document.getElementById('fBusca').value='';
+  document.getElementById('fTeste').checked=false;
+  atualizar();
+});
+
+// Abas
+document.querySelectorAll('.abas button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.abas button').forEach(b=>b.classList.remove('ativa'));
+    document.querySelectorAll('.aba').forEach(a=>a.hidden=true);
+    btn.classList.add('ativa');
+    document.getElementById(btn.dataset.aba).hidden=false;
+  });
+});
+
+// Destaques troca
+document.querySelectorAll('.destaque-troca button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.destaque-troca button').forEach(b=>b.classList.remove('ativa'));
+    btn.classList.add('ativa');
+    destAtual=btn.dataset.dest;
+    renderDestaques();
+  });
+});
+
+// Ordenação tabelas
+document.querySelectorAll('#tabEstados thead th').forEach(th=>{
+  th.addEventListener('click',()=>{ if(ordEstados.k===th.dataset.k)ordEstados.dir*=-1; else{ordEstados.k=th.dataset.k;ordEstados.dir=-1;} renderEstados(filtrar()); });
+});
+document.querySelectorAll('#tabEscolas thead th').forEach(th=>{
+  th.addEventListener('click',()=>{ if(ordEscolas.k===th.dataset.k)ordEscolas.dir*=-1; else{ordEscolas.k=th.dataset.k;ordEscolas.dir=-1;} renderEscolas(filtrar()); });
+});
+document.querySelectorAll('#tabPart thead th').forEach(th=>{
+  th.addEventListener('click',()=>{ if(ordPart.k===th.dataset.k)ordPart.dir*=-1; else{ordPart.k=th.dataset.k;ordPart.dir=-1;} renderParticipantes(filtrar()); });
+});
+document.querySelectorAll('#tabAtencao thead th').forEach(th=>{
+  th.addEventListener('click',()=>{ if(ordAtencao.k===th.dataset.k)ordAtencao.dir*=-1; else{ordAtencao.k=th.dataset.k;ordAtencao.dir=1;} renderAtencao(); });
+});
+document.querySelectorAll('#tabCat thead th').forEach(th=>{
+  th.addEventListener('click',()=>{ if(ordCat.k===th.dataset.k)ordCat.dir*=-1; else{ordCat.k=th.dataset.k;ordCat.dir=-1;} renderCategorias(); });
+});
+
+function filtrar(){
+  return DADOS.filter(r=>{
+    if(!filtros.teste && r.teste) return false;
+    if(filtros.estado && r.estado!==filtros.estado) return false;
+    if(filtros.cidade && r.cidade!==filtros.cidade) return false;
+    if(filtros.funcao && !r.funcoes.includes(filtros.funcao)) return false;
+    if(filtros.genero && r.genero!==filtros.genero) return false;
+    if(filtros.raca && r.raca!==filtros.raca) return false;
+    if(filtros.busca){
+      const q = norm(filtros.busca);
+      const alvo = norm(r.escola+' '+r.cidade);
+      if(!alvo.includes(q)) return false;
+    }
+    return true;
+  });
+}
+
+// ---------- Componentes ----------
+function barras(containerId, dados, cor){
+  const el = document.getElementById(containerId);
+  if(!dados.length){el.innerHTML='<div style="color:var(--cinza);font-size:.82rem">Sem dados para o filtro atual.</div>';return;}
+  const max = Math.max(...dados.map(d=>d.valor),1);
+  el.innerHTML = dados.map((d,i)=>{
+    const c = cor || corPara(i);
+    const w = (d.valor/max*100).toFixed(1);
+    return '<div class="bar"><span class="nome" title="'+d.rotulo+'">'+d.rotulo+'</span>'
+      +'<span class="track"><span class="fill" style="width:'+w+'%;background:'+c+'"></span></span>'
+      +'<span class="num">'+d.valor+'</span></div>';
+  }).join('');
+}
+
+function donut(containerId, dados){
+  const el = document.getElementById(containerId);
+  const total = dados.reduce((s,d)=>s+d.valor,0);
+  if(!total){el.innerHTML='<div style="color:var(--cinza);font-size:.82rem">Sem dados.</div>';return;}
+  const R=58, r=36, cx=70, cy=70, C=2*Math.PI*((R+r)/2), sw=R-r;
+  let acc=0;
+  const segs = dados.map((d,i)=>{
+    const frac=d.valor/total, dash=frac*C, off=-acc*C; acc+=frac;
+    return '<circle cx="'+cx+'" cy="'+cy+'" r="'+((R+r)/2)+'" fill="none" stroke="'+corPara(i)+'" stroke-width="'+sw+'" stroke-dasharray="'+dash+' '+(C-dash)+'" stroke-dashoffset="'+off+'" transform="rotate(-90 '+cx+' '+cy+')"></circle>';
+  }).join('');
+  const svg = '<svg width="140" height="140" viewBox="0 0 140 140">'+segs
+    +'<text x="70" y="66" text-anchor="middle" font-family="Fraunces,serif" font-size="26" font-weight="600" fill="#2a1c3d">'+total+'</text>'
+    +'<text x="70" y="84" text-anchor="middle" font-size="9" fill="#6c6478" font-family="Archivo">participantes</text></svg>';
+  const leg = '<div class="legenda">'+dados.map((d,i)=>'<div class="it"><span class="pt" style="background:'+corPara(i)+'"></span><span class="lab">'+d.rotulo+'</span><span class="val">'+d.valor+' · '+(d.valor/total*100).toFixed(0)+'%</span></div>').join('')+'</div>';
+  el.innerHTML = svg+leg;
+}
+
+function contar(arr, chaveFn){
+  const m={};
+  arr.forEach(r=>{ const ks=chaveFn(r); (Array.isArray(ks)?ks:[ks]).forEach(k=>{if(k){m[k]=(m[k]||0)+1;}}); });
+  return Object.entries(m).map(([rotulo,valor])=>{return {rotulo,valor}}).sort((a,b)=>b.valor-a.valor);
+}
+
+// ---------- Atualizar ----------
+function atualizar(){
+  const view = filtrar();
+  const totConcl = view.reduce((s,r)=>s+r.concluidos,0);
+  const totCert = view.reduce((s,r)=>s+r.certificados,0);
+  const pctMedio = view.length ? view.reduce((s,r)=>s+r.pct,0)/view.length : 0;
+  const engaj = view.filter(r=>r.concluidos>0).length;
+  const muns = uniq(view.map(r=>r.cidade)).length;
+  const esc = uniq(view.map(r=>r.escola)).length;
+  const terr = uniq(view.map(r=>r.estado)).length;
+  const kpis = [
+    {v:view.length, l:'Participantes', c:'var(--roxo)'},
+    {v:terr, l:'Territórios (estados)', c:'var(--ciano)'},
+    {v:muns, l:'Municípios', c:'var(--amarelo)'},
+    {v:esc, l:'Escolas / instituições', c:'var(--laranja)'},
+    {v:totConcl, l:'Cursos concluídos', c:'var(--ciano)'},
+    {v:totCert, l:'Certificados emitidos', c:'var(--roxo)'},
+    {v:pctMedio.toFixed(1)+'%', l:'Conclusão média do percurso', c:'var(--laranja)'},
+    {v:engaj+(view.length?' ('+(engaj/view.length*100).toFixed(0)+'%)':''), l:'Com ≥1 curso concluído', c:'var(--amarelo)'},
+  ];
+  document.getElementById('kpis').innerHTML = kpis.map(k=>'<div class="kpi" style="--c:'+k.c+'"><div class="v">'+k.v+'</div><div class="l">'+k.l+'</div></div>').join('');
+
+  barras('cFuncao', contar(view,r=>r.funcoes), 'var(--roxo)');
+  donut('cGenero', contar(view,r=>r.genero));
+  barras('cRaca', contar(view,r=>r.raca), 'var(--ciano)');
+  barras('cVinculo', contar(view,r=>r.vinculos), 'var(--laranja)');
+
+  const buckets={'0':0,'1':0,'2':0,'3':0,'4 ou mais':0};
+  view.forEach(r=>{ const c=r.concluidos; buckets[c>=4?'4 ou mais':String(c)]++; });
+  const rotuloConcl = k => k==='1' ? '1 curso' : k==='4 ou mais' ? '4 ou mais cursos' : k+' cursos';
+  barras('cDistConcl', Object.entries(buckets).map(([k,valor])=>{return {rotulo:rotuloConcl(k),valor}}).filter(d=>d.valor>=0), 'var(--amarelo)');
+  const faixas={'0%':0,'1% a 10%':0,'11% a 25%':0,'26% a 50%':0,'Acima de 50%':0};
+  view.forEach(r=>{ const p=r.pct; if(p<=0)faixas['0%']++; else if(p<=10)faixas['1% a 10%']++; else if(p<=25)faixas['11% a 25%']++; else if(p<=50)faixas['26% a 50%']++; else faixas['Acima de 50%']++; });
+  barras('cFaixaPct', Object.entries(faixas).map(([rotulo,valor])=>{return {rotulo,valor}}), 'var(--ciano)');
+
+  renderEstados(view);
+  renderEscolas(view);
+  renderParticipantes(view);
+  renderAtencao();
+  renderDestaques();
+  renderCategorias();
+}
+
+function setaSimbolo(ord,k){ return ord.k===k ? (ord.dir>0?' ▲':' ▼') : ' ↕'; }
+
+function renderEstados(view){
+  const m={};
+  view.forEach(r=>{
+    const e=r.estado; m[e]=m[e]||{estado:e,n:0,concluidos:0,certificados:0,catalogo:0,somaPct:0,engaj:0};
+    m[e].n++; m[e].concluidos+=r.concluidos; m[e].certificados+=r.certificados;
+    m[e].catalogo=Math.max(m[e].catalogo,r.inscritos); m[e].somaPct+=r.pct; if(r.concluidos>0)m[e].engaj++;
+  });
+  let linhas=Object.values(m).map(o=>{return {...o,pctMedio:o.n?o.somaPct/o.n:0,engajPct:o.n?o.engaj/o.n*100:0}});
+  linhas.sort((a,b)=> ordEstados.dir*((typeof a[ordEstados.k]==='string')?a[ordEstados.k].localeCompare(b[ordEstados.k],'pt'):a[ordEstados.k]-b[ordEstados.k]));
+  const tb=document.querySelector('#tabEstados tbody');
+  tb.innerHTML = linhas.length? linhas.map(o=>'<tr>'
+    +'<td><b>'+o.estado+'</b></td><td>'+o.n+'</td><td>'+o.catalogo+'</td><td>'+o.concluidos+'</td>'
+    +'<td>'+(o.certificados?'<span class="chip cert">'+o.certificados+'</span>':'0')+'</td>'
+    +'<td>'+o.engajPct.toFixed(0)+'%</td>'
+    +'<td><div class="pct-cell"><span class="mini-track"><span class="mini-fill" style="width:'+Math.min(o.pctMedio,100)+'%;background:var(--ciano)"></span></span>'+o.pctMedio.toFixed(1)+'%</div></td>'
+    +'</tr>').join('') : '<tr><td colspan="7" class="vazio">Sem dados para o filtro atual.</td></tr>';
+  document.querySelectorAll('#tabEstados thead th').forEach(th=>{
+    th.innerHTML = th.textContent.replace(/[▲▼↕]/g,'').trim()+'<span class="seta">'+setaSimbolo(ordEstados,th.dataset.k).trim()+'</span>';
+  });
+}
+
+function renderEscolas(view){
+  const m={};
+  view.forEach(r=>{
+    const k=r.escola||'(não informado)';
+    m[k]=m[k]||{escola:k,cidade:r.cidade,estado:r.estado,n:0,concluidos:0,certificados:0,somaPct:0};
+    m[k].n++; m[k].concluidos+=r.concluidos; m[k].certificados+=r.certificados; m[k].somaPct+=r.pct;
+  });
+  let linhas=Object.values(m).map(o=>{return {...o,pctMedio:o.n?o.somaPct/o.n:0}});
+  linhas.sort((a,b)=> ordEscolas.dir*((typeof a[ordEscolas.k]==='string')?(a[ordEscolas.k]||'').localeCompare(b[ordEscolas.k]||'','pt'):a[ordEscolas.k]-b[ordEscolas.k]));
+  document.getElementById('capEscolas').innerHTML='<b>'+linhas.length+'</b> escolas / instituições';
+  const tb=document.querySelector('#tabEscolas tbody');
+  tb.innerHTML = linhas.length? linhas.map(o=>'<tr>'
+    +'<td class="escola-cell">'+o.escola+'</td><td>'+o.cidade+'</td><td>'+o.estado+'</td>'
+    +'<td>'+o.n+'</td><td>'+o.concluidos+'</td>'
+    +'<td>'+(o.certificados?'<span class="chip cert">'+o.certificados+'</span>':'0')+'</td>'
+    +'<td><div class="pct-cell"><span class="mini-track"><span class="mini-fill" style="width:'+Math.min(o.pctMedio,100)+'%;background:var(--laranja)"></span></span>'+o.pctMedio.toFixed(1)+'%</div></td>'
+    +'</tr>').join('') : '<tr><td colspan="7" class="vazio">Sem dados para o filtro atual.</td></tr>';
+  document.querySelectorAll('#tabEscolas thead th').forEach(th=>{
+    th.innerHTML = th.textContent.replace(/[▲▼↕]/g,'').trim()+'<span class="seta">'+setaSimbolo(ordEscolas,th.dataset.k).trim()+'</span>';
+  });
+}
+
+function renderParticipantes(view){
+  let linhas=view.map(r=>{return {...r,funcao:r.funcoes.join(', ')}});
+  linhas.sort((a,b)=> ordPart.dir*((typeof a[ordPart.k]==='string')?(a[ordPart.k]||'').localeCompare(b[ordPart.k]||'','pt'):a[ordPart.k]-b[ordPart.k]));
+  document.getElementById('capPart').innerHTML='<b>'+linhas.length+'</b> participantes';
+  const cod = id => 'Participante '+String(id).padStart(3,'0');
+  const tb=document.querySelector('#tabPart tbody');
+  tb.innerHTML = linhas.length? linhas.map(r=>'<tr>'
+    +'<td><b>'+cod(r.id)+'</b>'+(r.teste?' <span class="chip teste">teste</span>':'')+'</td>'
+    +'<td>'+r.estado+'</td><td>'+r.cidade+'</td>'
+    +'<td class="escola-cell">'+r.escola+'</td>'
+    +'<td>'+r.funcoes.map(f=>'<span class="chip">'+f+'</span>').join(' ')+'</td>'
+    +'<td>'+r.genero+'</td><td>'+r.raca+'</td>'
+    +'<td><div class="pct-cell"><span class="mini-track"><span class="mini-fill" style="width:'+Math.min(r.pct,100)+'%;background:var(--roxo)"></span></span>'+r.pct.toFixed(1)+'%</div></td>'
+    +'<td>'+r.concluidos+'</td>'
+    +'<td>'+(r.certificados?'<span class="chip cert">'+r.certificados+'</span>':'0')+'</td>'
+    +'</tr>').join('') : '<tr><td colspan="10" class="vazio">Sem dados para o filtro atual.</td></tr>';
+  document.querySelectorAll('#tabPart thead th').forEach(th=>{
+    th.innerHTML = th.textContent.replace(/[▲▼↕]/g,'').trim()+'<span class="seta">'+setaSimbolo(ordPart,th.dataset.k).trim()+'</span>';
+  });
+}
+
+// ---------- Aba 2: atenção e destaques ----------
+const ordAtencao = {k:'engajPct',dir:1};
+let destAtual = 'prof';
+const tem = (r,papel)=>r.funcoes.some(f=>f.indexOf(papel)>=0);
+const baseValida = ()=> DADOS.filter(r=> filtros.teste || !r.teste);
+
+function nivelInfo(engajPct, catalogo){
+  if(catalogo===0) return {classe:'sem', rotulo:'Catálogo não liberado'};
+  if(engajPct===0) return {classe:'critico', rotulo:'Crítico'};
+  if(engajPct<20) return {classe:'baixo', rotulo:'Baixo'};
+  if(engajPct<50) return {classe:'moderado', rotulo:'Moderado'};
+  return {classe:'bom', rotulo:'Bom'};
+}
+
+function agregarMunicipios(){
+  const base = baseValida();
+  const m={};
+  base.forEach(r=>{
+    const k=r.cidade;
+    m[k]=m[k]||{cidade:k,estado:r.estado,n:0,concluidos:0,certificados:0,catalogo:0,concluintes:0,somaPct:0};
+    const d=m[k]; d.n++; d.concluidos+=r.concluidos; d.certificados+=r.certificados;
+    d.catalogo=Math.max(d.catalogo,r.inscritos); d.somaPct+=r.pct; if(r.concluidos>0)d.concluintes++;
+  });
+  return Object.values(m).map(o=>{return {...o, engajPct:o.n?o.concluintes/o.n*100:0, pctMedio:o.n?o.somaPct/o.n:0,
+    nivel:nivelInfo(o.n?o.concluintes/o.n*100:0, o.catalogo)}});
+}
+
+function renderAtencao(){
+  const linhas = agregarMunicipios();
+  const cores={critico:'#b02a2a',baixo:'#9a4d05',sem:'#6c6478'};
+  const prioritarios = linhas.filter(o=>o.nivel.classe==='critico'||o.nivel.classe==='sem')
+    .sort((a,b)=>a.n-b.n);
+  const al=document.getElementById('alertas');
+  al.innerHTML = prioritarios.map(o=>{
+    const cor=cores[o.nivel.classe]||'#b02a2a';
+    let txt;
+    if(o.nivel.classe==='sem') txt='O catálogo de cursos ainda não foi liberado para este município, com <b>'+o.catalogo+'</b> curso(s) disponível(is). É necessário verificar a configuração da trilha antes de cobrar engajamento.';
+    else txt='<b>'+o.n+'</b> participante(s) inscrito(s) e <b>nenhuma</b> conclusão registrada até a extração, com catálogo de '+o.catalogo+' cursos. Recomenda-se ação de mobilização e suporte.';
+    return '<div class="alerta" style="--c:'+cor+'"><div class="mun">'+o.cidade+'</div><div class="uf">'+o.estado+'</div><div class="txt">'+txt+'</div></div>';
+  }).join('') || '<div class="intro">Nenhum município em situação crítica no filtro atual.</div>';
+
+  let dados=[...linhas];
+  dados.sort((a,b)=>{
+    const k=ordAtencao.k;
+    let va = (k==='nivel')?a.engajPct:a[k];
+    let vb = (k==='nivel')?b.engajPct:b[k];
+    if(typeof va==='string') return ordAtencao.dir*va.localeCompare(vb,'pt');
+    return ordAtencao.dir*(va-vb);
+  });
+  const tb=document.querySelector('#tabAtencao tbody');
+  tb.innerHTML = dados.map(o=>'<tr>'
+    +'<td><b>'+o.cidade+'</b></td><td>'+o.estado+'</td><td>'+o.n+'</td><td>'+o.catalogo+'</td>'
+    +'<td>'+o.concluintes+'</td><td>'+o.concluidos+'</td>'
+    +'<td>'+(o.certificados?'<span class="chip cert">'+o.certificados+'</span>':'0')+'</td>'
+    +'<td><div class="pct-cell"><span class="mini-track"><span class="mini-fill" style="width:'+Math.min(o.engajPct,100)+'%;background:var(--ciano)"></span></span>'+o.engajPct.toFixed(0)+'%</div></td>'
+    +'<td><span class="nivel '+o.nivel.classe+'">'+o.nivel.rotulo+'</span></td>'
+    +'</tr>').join('');
+  document.querySelectorAll('#tabAtencao thead th').forEach(th=>{
+    th.innerHTML = th.textContent.replace(/[▲▼↕]/g,'').trim()+'<span class="seta">'+setaSimbolo(ordAtencao,th.dataset.k).trim()+'</span>';
+  });
+}
+
+function renderDestaques(){
+  const base = baseValida();
+  const cod = id => 'Participante '+String(id).padStart(3,'0');
+  const tabelaPessoas = (lista) => {
+    if(!lista.length) return '<div class="vazio">Nenhum registro com conclusão no filtro atual.</div>';
+    return '<table><thead><tr><th>#</th><th>Participante</th><th>Função</th><th>Município</th><th>Estado</th><th>Escola</th><th>Concluídos</th><th>Certificados</th><th>% conclusão</th></tr></thead><tbody>'
+      + lista.map((r,i)=>'<tr><td class="medalha">'+(i+1)+'º</td><td class="codigo">'+cod(r.id)+'</td>'
+        +'<td>'+r.funcoes.map(f=>'<span class="chip">'+f+'</span>').join(' ')+'</td>'
+        +'<td>'+r.cidade+'</td><td>'+r.estado+'</td><td class="escola-cell">'+r.escola+'</td>'
+        +'<td><b>'+r.concluidos+'</b></td>'
+        +'<td>'+(r.certificados?'<span class="chip cert">'+r.certificados+'</span>':'0')+'</td>'
+        +'<td>'+r.pct.toFixed(1)+'%</td></tr>').join('')
+      + '</tbody></table>';
+  };
+  const cap=document.getElementById('capDest');
+  const sum=document.getElementById('destSumario');
+  const tab=document.getElementById('destTabela');
+
+  if(destAtual==='prof' || destAtual==='gest'){
+    const papel = destAtual==='prof' ? 'Professor' : 'Gestor';
+    const lista = base.filter(r=>tem(r,papel) && r.concluidos>0)
+      .sort((a,b)=> b.concluidos-a.concluidos || b.certificados-a.certificados || b.pct-a.pct);
+    const municipios = uniq(lista.map(r=>r.cidade));
+    cap.innerHTML = '<b>'+lista.length+'</b> '+(destAtual==='prof'?'professores':'gestores/coordenadores')+' com ao menos uma conclusão';
+    sum.innerHTML = municipios.length
+      ? 'Municípios com '+(destAtual==='prof'?'professores':'gestores')+' em destaque: <b>'+municipios.join(', ')+'</b>.'
+      : '';
+    tab.innerHTML = tabelaPessoas(lista);
+  } else {
+    const m={};
+    base.forEach(r=>{ const k=r.escola||'(não informado)'; m[k]=m[k]||{escola:k,cidade:r.cidade,estado:r.estado,n:0,concluidos:0,certificados:0,concluintes:0};
+      const d=m[k]; d.n++; d.concluidos+=r.concluidos; d.certificados+=r.certificados; if(r.concluidos>0)d.concluintes++; });
+    const lista=Object.values(m).filter(o=>o.concluidos>0).sort((a,b)=> b.concluidos-a.concluidos || b.certificados-a.certificados);
+    cap.innerHTML = '<b>'+lista.length+'</b> escolas / instituições com conclusões registradas';
+    const municipios = uniq(lista.map(o=>o.cidade));
+    sum.innerHTML = municipios.length ? 'Municípios com escolas em destaque: <b>'+municipios.join(', ')+'</b>.' : '';
+    tab.innerHTML = lista.length
+      ? '<table><thead><tr><th>#</th><th>Escola / instituição</th><th>Município</th><th>Estado</th><th>Participantes</th><th>Concluintes</th><th>Cursos concluídos</th><th>Certificados</th></tr></thead><tbody>'
+        + lista.map((o,i)=>'<tr><td class="medalha">'+(i+1)+'º</td><td class="escola-cell" style="color:var(--ink);font-weight:500">'+o.escola+'</td>'
+          +'<td>'+o.cidade+'</td><td>'+o.estado+'</td><td>'+o.n+'</td><td>'+o.concluintes+'</td>'
+          +'<td><b>'+o.concluidos+'</b></td>'
+          +'<td>'+(o.certificados?'<span class="chip cert">'+o.certificados+'</span>':'0')+'</td></tr>').join('')
+        + '</tbody></table>'
+      : '<div class="vazio">Nenhuma escola com conclusão no filtro atual.</div>';
+  }
+}
+
+// ---------- Aba 3: categorias de curso ----------
+const ordCat = {k:'matriculas',dir:-1};
+
+function renderCategorias(){
+  const totCursos=CATEGORIAS.reduce((s,c)=>s+c.cursos,0);
+  const totMat=CATEGORIAS.reduce((s,c)=>s+c.matriculas,0);
+  const totConc=CATEGORIAS.reduce((s,c)=>s+c.conclusoes,0);
+  const taxa=totMat?totConc/totMat*100:0;
+  const fmt=n=>n.toLocaleString('pt-BR');
+  const kpis=[
+    {v:CATEGORIAS.length, l:'Categorias de curso', c:'var(--roxo)'},
+    {v:fmt(totCursos), l:'Cursos no total', c:'var(--ciano)'},
+    {v:fmt(totMat), l:'Matrículas (enrolments)', c:'var(--laranja)'},
+    {v:fmt(totConc), l:'Conclusões de curso', c:'var(--amarelo)'},
+    {v:taxa.toFixed(2)+'%', l:'Taxa global de conclusão', c:'var(--ciano)'},
+  ];
+  document.getElementById('kpisCat').innerHTML=kpis.map(k=>'<div class="kpi" style="--c:'+k.c+'"><div class="v">'+k.v+'</div><div class="l">'+k.l+'</div></div>').join('');
+
+  const porMat=[...CATEGORIAS].sort((a,b)=>b.matriculas-a.matriculas).map(c=>{return {rotulo:c.categoria,valor:c.matriculas}});
+  barras('cCatMatriculas', porMat, 'var(--laranja)');
+  const porConc=[...CATEGORIAS].sort((a,b)=>b.conclusoes-a.conclusoes).map(c=>{return {rotulo:c.categoria,valor:c.conclusoes}});
+  barras('cCatConclusoes', porConc, 'var(--ciano)');
+
+  let linhas=[...CATEGORIAS];
+  linhas.sort((a,b)=> ordCat.dir*((typeof a[ordCat.k]==='string')?a[ordCat.k].localeCompare(b[ordCat.k],'pt'):a[ordCat.k]-b[ordCat.k]));
+  document.getElementById('capCat').innerHTML='<b>'+CATEGORIAS.length+'</b> categorias · <b>'+totCursos+'</b> cursos';
+  const fmtN=n=>n.toLocaleString('pt-BR');
+  const tb=document.querySelector('#tabCat tbody');
+  tb.innerHTML=linhas.map(c=>'<tr>'
+    +'<td><b>'+c.categoria+'</b></td><td>'+c.cursos+'</td>'
+    +'<td>'+fmtN(c.matriculas)+'</td><td>'+fmtN(c.conclusoes)+'</td>'
+    +'<td><div class="pct-cell"><span class="mini-track"><span class="mini-fill" style="width:'+Math.min(c.pct,100)+'%;background:var(--roxo)"></span></span>'+c.pct.toFixed(2)+'%</div></td>'
+    +'</tr>').join('');
+  document.querySelectorAll('#tabCat thead th').forEach(th=>{
+    th.innerHTML = th.textContent.replace(/[▲▼↕]/g,'').trim()+'<span class="seta">'+setaSimbolo(ordCat,th.dataset.k).trim()+'</span>';
+  });
+}
+
+// Inicializar
+atualizar();
+</script>
+</body>
+</html>
