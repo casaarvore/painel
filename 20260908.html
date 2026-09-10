@@ -93,6 +93,9 @@ table{border-collapse:collapse;width:100%;font-size:.82rem}
 thead th{position:sticky;top:0;background:var(--tinta);text-align:left;padding:11px 13px;font-weight:700;color:var(--roxo-escuro);white-space:nowrap;cursor:pointer;user-select:none;border-bottom:2px solid var(--linha);font-size:.76rem;text-transform:uppercase;letter-spacing:.03em}
 thead th:hover{background:#efe7dc}
 thead th .seta{opacity:.4;font-size:.7rem;margin-left:3px}
+.filtro-linha td{background:var(--tinta);padding:6px 8px;border-bottom:2px solid var(--linha)}
+.filtro-linha select{width:100%;font-family:inherit;font-size:.74rem;padding:5px 7px;border:1px solid var(--linha);border-radius:7px;background:#fff;color:var(--ink);outline:none;cursor:pointer}
+.filtro-linha select:focus{border-color:var(--ciano);box-shadow:0 0 0 3px rgba(27,168,197,.15)}
 tbody td{padding:10px 13px;border-bottom:1px solid #f1ece4;vertical-align:top}
 tbody tr:hover{background:#fcf9f4}
 .pct-cell{display:flex;align-items:center;gap:8px;min-width:120px}
@@ -200,7 +203,7 @@ a{color:var(--ciano)}
         </div>
         <div class="campo">
           <label>Função</label>
-          <select id="fFuncao"><option value="">Todas as funções</option><option>Convidado (a)</option><option>Convidado (a);Professor(a)</option><option>Equipe da rede de ensino</option><option>Equipe da rede de ensino;Equipe de suporte</option><option>Equipe da rede de ensino;Professor(a);Estudante;Equipe de suporte;Gestor/coordenador escolar</option><option>Equipe de suporte</option><option>Gestor/coordenador escolar</option><option>Professor(a)</option><option>Professor(a);Equipe de suporte;Equipe da rede de ensino;Gestor/coordenador escolar</option><option>Professor(a);Estudante</option><option>Professor(a);Gestor/coordenador escolar</option></select>
+          <select id="fFuncao"><option value="">Todas as funções</option><option>Educador</option><option>Estudante</option><option>Rede</option><option>Outros</option></select>
         </div>
         <div class="campo">
           <label>Gênero</label>
@@ -365,6 +368,18 @@ a{color:var(--ciano)}
               <th data-k="pct">% conclusão</th>
               <th data-k="concluidos">Concl.</th>
               <th data-k="certificados">Cert.</th>
+            </tr>
+            <tr class="filtro-linha">
+              <td></td>
+              <td><select id="fEstadoTab"><option value="">Todos</option><option>Ceará</option><option>Maranhão</option><option>Pernambuco</option><option>Rio Grande do Norte</option><option>Roraima</option></select></td>
+              <td><select id="fCidadeTab"><option value="">Todos</option><option>Alcântara</option><option>Bequimão</option><option>Betânia</option><option>Boa Vista</option><option>Bonfim</option><option>Cantá</option><option>Caucaia</option><option>Cerro Corá</option><option>Extremoz</option><option>Lagoa de Velhos</option><option>Pacaraima</option><option>Pedro Avelino</option><option>Touros</option><option>Uiramutã</option></select></td>
+              <td></td>
+              <td><select id="fFuncaoTab"><option value="">Todas</option><option>Educador</option><option>Estudante</option><option>Rede</option><option>Outros</option></select></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
             </tr></thead>
             <tbody></tbody>
           </table>
@@ -445,13 +460,16 @@ const cores = ['var(--roxo)','var(--ciano)','var(--laranja)','var(--amarelo)','#
 const corPara = i => cores[i % cores.length];
 
 // Eventos
-document.getElementById('fEstado').addEventListener('change', e=>{ filtros.estado=e.target.value; atualizar(); });
-document.getElementById('fCidade').addEventListener('change', e=>{ filtros.cidade=e.target.value; atualizar(); });
-document.getElementById('fFuncao').addEventListener('change', e=>{ filtros.funcao=e.target.value; atualizar(); });
+document.getElementById('fEstado').addEventListener('change', e=>{ filtros.estado=e.target.value; document.getElementById('fEstadoTab').value=e.target.value; atualizar(); });
+document.getElementById('fCidade').addEventListener('change', e=>{ filtros.cidade=e.target.value; document.getElementById('fCidadeTab').value=e.target.value; atualizar(); });
+document.getElementById('fFuncao').addEventListener('change', e=>{ filtros.funcao=e.target.value; document.getElementById('fFuncaoTab').value=e.target.value; atualizar(); });
 document.getElementById('fGenero').addEventListener('change', e=>{ filtros.genero=e.target.value; atualizar(); });
 document.getElementById('fRaca').addEventListener('change', e=>{ filtros.raca=e.target.value; atualizar(); });
 document.getElementById('fBusca').addEventListener('input', e=>{ filtros.busca=e.target.value; atualizar(); });
 document.getElementById('fTeste').addEventListener('change', e=>{ filtros.teste=e.target.checked; atualizar(); });
+document.getElementById('fEstadoTab').addEventListener('change', e=>{ filtros.estado=e.target.value; document.getElementById('fEstado').value=e.target.value; atualizar(); });
+document.getElementById('fCidadeTab').addEventListener('change', e=>{ filtros.cidade=e.target.value; document.getElementById('fCidade').value=e.target.value; atualizar(); });
+document.getElementById('fFuncaoTab').addEventListener('change', e=>{ filtros.funcao=e.target.value; document.getElementById('fFuncao').value=e.target.value; atualizar(); });
 document.getElementById('limpar').addEventListener('click', ()=>{
   filtros.estado=''; filtros.cidade=''; filtros.funcao=''; filtros.genero=''; filtros.raca=''; filtros.busca=''; filtros.teste=false;
   document.getElementById('fEstado').value='';
@@ -461,6 +479,9 @@ document.getElementById('limpar').addEventListener('click', ()=>{
   document.getElementById('fRaca').value='';
   document.getElementById('fBusca').value='';
   document.getElementById('fTeste').checked=false;
+  document.getElementById('fEstadoTab').value='';
+  document.getElementById('fCidadeTab').value='';
+  document.getElementById('fFuncaoTab').value='';
   atualizar();
 });
 
@@ -506,7 +527,7 @@ function filtrar(){
     if(!filtros.teste && r.teste) return false;
     if(filtros.estado && r.estado!==filtros.estado) return false;
     if(filtros.cidade && r.cidade!==filtros.cidade) return false;
-    if(filtros.funcao && !r.funcoes.includes(filtros.funcao)) return false;
+    if(filtros.funcao && !gruposFuncao(r).includes(filtros.funcao)) return false;
     if(filtros.genero && r.genero!==filtros.genero) return false;
     if(filtros.raca && r.raca!==filtros.raca) return false;
     if(filtros.busca){
@@ -664,7 +685,7 @@ function renderEscolas(view){
 }
 
 function renderParticipantes(view){
-  let linhas=view.map(r=>{return {...r,funcao:r.funcoes.join(', ')}});
+  let linhas=view.map(r=>{return {...r,funcao:gruposFuncao(r).join(', ')}});
   linhas.sort((a,b)=> ordPart.dir*((typeof a[ordPart.k]==='string')?(a[ordPart.k]||'').localeCompare(b[ordPart.k]||'','pt'):a[ordPart.k]-b[ordPart.k]));
   document.getElementById('capPart').innerHTML='<b>'+linhas.length+'</b> participantes';
   const cod = id => 'Participante '+String(id).padStart(3,'0');
@@ -673,7 +694,7 @@ function renderParticipantes(view){
     +'<td><b>'+cod(r.id)+'</b>'+(r.teste?' <span class="chip teste">teste</span>':'')+'</td>'
     +'<td>'+r.estado+'</td><td>'+r.cidade+'</td>'
     +'<td class="escola-cell">'+r.escola+'</td>'
-    +'<td>'+r.funcoes.map(f=>'<span class="chip">'+f+'</span>').join(' ')+'</td>'
+    +'<td>'+gruposFuncao(r).map(f=>'<span class="chip">'+f+'</span>').join(' ')+'</td>'
     +'<td>'+r.genero+'</td><td>'+r.raca+'</td>'
     +'<td><div class="pct-cell"><span class="mini-track"><span class="mini-fill" style="width:'+Math.min(r.pct,100)+'%;background:var(--roxo)"></span></span>'+r.pct.toFixed(1)+'%</div></td>'
     +'<td>'+r.concluidos+'</td>'
@@ -753,7 +774,7 @@ function renderDestaques(){
     if(!lista.length) return '<div class="vazio">Nenhum registro com conclusão no filtro atual.</div>';
     return '<table><thead><tr><th>#</th><th>Participante</th><th>Função</th><th>Município</th><th>Estado</th><th>Escola</th><th>Concluídos</th><th>Certificados</th><th>% conclusão</th></tr></thead><tbody>'
       + lista.map((r,i)=>'<tr><td class="medalha">'+(i+1)+'º</td><td class="codigo">'+cod(r.id)+'</td>'
-        +'<td>'+r.funcoes.map(f=>'<span class="chip">'+f+'</span>').join(' ')+'</td>'
+        +'<td>'+gruposFuncao(r).map(f=>'<span class="chip">'+f+'</span>').join(' ')+'</td>'
         +'<td>'+r.cidade+'</td><td>'+r.estado+'</td><td class="escola-cell">'+r.escola+'</td>'
         +'<td><b>'+r.concluidos+'</b></td>'
         +'<td>'+(r.certificados?'<span class="chip cert">'+r.certificados+'</span>':'0')+'</td>'
