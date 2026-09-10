@@ -6,28 +6,30 @@
 <title>Painel de cursos · Territórios Conectados</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --laranja:#EF7D1A;
-  --amarelo:#F9B233;
-  --roxo:#5B2B82;
-  --ciano:#1BA8C5;
-  --roxo-escuro:#36204e;
-  --ink:#2a1c3d;
-  --cinza:#6c6478;
-  --linha:#e7e0d6;
-  --fundo:#FBF8F3;
+  --laranja:#FF8B5E;
+  --amarelo:#E0A72E;
+  --roxo:#6C3FA6;
+  --ciano:#2FAE72;
+  --roxo-escuro:#4B2876;
+  --ink:#241B36;
+  --cinza:#4B3E63;
+  --linha:#E2DAF0;
+  --fundo:#F6F3FB;
   --cartao:#ffffff;
-  --sombra:0 1px 2px rgba(54,32,78,.06),0 8px 24px rgba(54,32,78,.06);
+  --sombra:0 8px 24px -12px rgba(76,40,118,.25);
+  --tinta:#EDE7F6;
+  --trilha:#E7E0F3;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
-  margin:0;font-family:'Archivo',system-ui,sans-serif;color:var(--ink);
+  margin:0;font-family:'Inter',system-ui,sans-serif;color:var(--ink);
   background:var(--fundo);
-  background-image:radial-gradient(circle at 12% -5%,rgba(249,178,51,.10),transparent 38%),
-                   radial-gradient(circle at 92% 0%,rgba(27,168,197,.10),transparent 40%);
+  background-image:radial-gradient(1200px 500px at 100% -10%,rgba(255,139,94,.08),transparent 60%),
+                   radial-gradient(900px 500px at -10% 0%,rgba(108,63,166,.10),transparent 55%);
   line-height:1.5;-webkit-font-smoothing:antialiased;
 }
 .wrap{max-width:1240px;margin:0 auto;padding:0 24px 80px}
@@ -88,7 +90,7 @@ section{margin-bottom:34px}
 .tabela-wrap{background:var(--cartao);border:1px solid var(--linha);border-radius:16px;box-shadow:var(--sombra);overflow:hidden}
 .tabela-scroll{overflow:auto;max-height:560px}
 table{border-collapse:collapse;width:100%;font-size:.82rem}
-thead th{position:sticky;top:0;background:#f6f1ea;text-align:left;padding:11px 13px;font-weight:700;color:var(--roxo-escuro);white-space:nowrap;cursor:pointer;user-select:none;border-bottom:2px solid var(--linha);font-size:.76rem;text-transform:uppercase;letter-spacing:.03em}
+thead th{position:sticky;top:0;background:var(--tinta);text-align:left;padding:11px 13px;font-weight:700;color:var(--roxo-escuro);white-space:nowrap;cursor:pointer;user-select:none;border-bottom:2px solid var(--linha);font-size:.76rem;text-transform:uppercase;letter-spacing:.03em}
 thead th:hover{background:#efe7dc}
 thead th .seta{opacity:.4;font-size:.7rem;margin-left:3px}
 tbody td{padding:10px 13px;border-bottom:1px solid #f1ece4;vertical-align:top}
@@ -96,22 +98,22 @@ tbody tr:hover{background:#fcf9f4}
 .pct-cell{display:flex;align-items:center;gap:8px;min-width:120px}
 .mini-track{flex:1;height:7px;background:#f1ece4;border-radius:4px;overflow:hidden;min-width:46px}
 .mini-fill{height:100%;border-radius:4px}
-.chip{display:inline-block;font-size:.7rem;padding:2px 8px;border-radius:999px;background:#f0ebf5;color:var(--roxo);font-weight:600;white-space:nowrap}
+.chip{display:inline-block;font-size:.7rem;padding:2px 8px;border-radius:999px;background:var(--tinta);color:var(--roxo);font-weight:600;white-space:nowrap}
 .chip.cert{background:rgba(27,168,197,.14);color:#0c6b80}
 .chip.teste{background:rgba(239,125,26,.16);color:#9a4d05}
 .email{color:var(--cinza);font-size:.76rem}
 .escola-cell{max-width:280px;font-size:.78rem;color:var(--cinza)}
-.caption{padding:13px 16px;font-size:.78rem;color:var(--cinza);border-bottom:1px solid var(--linha);background:#fbf9f5;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.caption{padding:13px 16px;font-size:.78rem;color:var(--cinza);border-bottom:1px solid var(--linha);background:var(--tinta);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .caption b{color:var(--ink)}
 .vazio{padding:48px;text-align:center;color:var(--cinza)}
-footer{margin-top:50px;padding-top:22px;border-top:1px solid var(--linha);font-size:.78rem;color:var(--cinza);max-width:72ch}
+footer{margin-top:50px;padding-top:22px;border-top:1px solid var(--linha);font-size:.78rem;color:var(--cinza);max-width:72ch;font-family:'JetBrains Mono',monospace}
 footer b{color:var(--roxo)}
 .legenda-fonte{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .legenda-fonte span{background:#fff;border:1px solid var(--linha);border-radius:7px;padding:4px 9px;font-size:.72rem}
 a{color:var(--ciano)}
 .abas{display:flex;gap:6px;border-bottom:1px solid var(--linha);margin-bottom:24px;flex-wrap:wrap}
 .abas button{font-family:inherit;font-size:.92rem;font-weight:600;color:var(--cinza);background:none;border:none;border-bottom:3px solid transparent;padding:12px 18px;cursor:pointer;margin-bottom:-1px;transition:.15s;border-radius:8px 8px 0 0}
-.abas button:hover{color:var(--ink);background:#fff8ef}
+.abas button:hover{color:var(--ink);background:var(--tinta)}
 .abas button.ativa{color:var(--roxo);border-bottom-color:var(--laranja)}
 .aba[hidden]{display:none}
 .nivel{display:inline-block;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap}
@@ -119,7 +121,7 @@ a{color:var(--ciano)}
 .nivel.baixo{background:rgba(239,125,26,.16);color:#9a4d05}
 .nivel.moderado{background:rgba(249,178,51,.20);color:#8a6310}
 .nivel.bom{background:rgba(27,168,197,.16);color:#0c6b80}
-.nivel.sem{background:#efeae2;color:#6c6478}
+.nivel.sem{background:var(--trilha);color:var(--cinza)}
 .alerta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-bottom:8px}
 .alerta{border:1px solid var(--linha);border-left:5px solid var(--c,#b02a2a);border-radius:14px;padding:16px 16px 14px;background:#fff;box-shadow:var(--sombra)}
 .alerta .mun{font-family:'Fraunces',serif;font-weight:600;font-size:1.05rem;margin-bottom:2px}
@@ -149,16 +151,16 @@ a{color:var(--ciano)}
 .cresc-row .atual{text-align:right;font-weight:700;color:var(--roxo);font-variant-numeric:tabular-nums}
 @media(max-width:640px){.cresc-row{grid-template-columns:110px 1fr 1fr 50px 50px}}
 .hist-table{width:100%;border-collapse:collapse;font-size:.82rem}
-.hist-table th{background:#f6f1ea;text-align:left;padding:9px 12px;font-weight:700;color:var(--roxo-escuro);font-size:.74rem;text-transform:uppercase;letter-spacing:.03em;border-bottom:2px solid var(--linha)}
+.hist-table th{background:var(--tinta);text-align:left;padding:9px 12px;font-weight:700;color:var(--roxo-escuro);font-size:.74rem;text-transform:uppercase;letter-spacing:.03em;border-bottom:2px solid var(--linha)}
 .hist-table td{padding:9px 12px;border-bottom:1px solid #f1ece4;vertical-align:middle}
 .hist-table tr:hover td{background:#fcf9f4}
 .delta-chip{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap}
 .delta-chip.pos{background:rgba(26,122,74,.12);color:#1a7a4a}
-.delta-chip.zero{background:#efeae2;color:var(--cinza)}
+.delta-chip.zero{background:var(--trilha);color:var(--cinza)}
 .delta-chip.neg{background:rgba(176,42,42,.12);color:#b02a2a}
-.info-btn{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:rgba(91,43,130,.12);color:var(--roxo);font-size:.72rem;font-weight:700;cursor:pointer;border:none;font-family:inherit;flex:none;vertical-align:middle;margin-left:6px;transition:.15s}
+.info-btn{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:rgba(108,63,166,.12);color:var(--roxo);font-size:.72rem;font-weight:700;cursor:pointer;border:none;font-family:inherit;flex:none;vertical-align:middle;margin-left:6px;transition:.15s}
 .info-btn:hover{background:var(--roxo);color:#fff}
-.info-popup{position:fixed;z-index:200;background:#fff;border:1px solid var(--linha);border-radius:14px;box-shadow:0 8px 32px rgba(54,32,78,.18);padding:18px 20px;max-width:380px;font-size:.82rem;line-height:1.55;color:var(--ink)}
+.info-popup{position:fixed;z-index:200;background:#fff;border:1px solid var(--linha);border-radius:14px;box-shadow:0 8px 32px rgba(75,40,118,.18);padding:18px 20px;max-width:380px;font-size:.82rem;line-height:1.55;color:var(--ink)}
 .info-popup h4{margin:0 0 10px;font-family:Fraunces,serif;font-size:1rem;color:var(--roxo)}
 .info-popup ul{margin:8px 0 0;padding-left:18px}
 .info-popup li{margin-bottom:5px}
@@ -540,8 +542,8 @@ function donut(containerId, dados){
     return '<circle cx="'+cx+'" cy="'+cy+'" r="'+((R+r)/2)+'" fill="none" stroke="'+corPara(i)+'" stroke-width="'+sw+'" stroke-dasharray="'+dash+' '+(C-dash)+'" stroke-dashoffset="'+off+'" transform="rotate(-90 '+cx+' '+cy+')"></circle>';
   }).join('');
   const svg = '<svg width="140" height="140" viewBox="0 0 140 140">'+segs
-    +'<text x="70" y="66" text-anchor="middle" font-family="Fraunces,serif" font-size="26" font-weight="600" fill="#2a1c3d">'+total+'</text>'
-    +'<text x="70" y="84" text-anchor="middle" font-size="9" fill="#6c6478" font-family="Archivo">participantes</text></svg>';
+    +'<text x="70" y="66" text-anchor="middle" font-family="Fraunces,serif" font-size="26" font-weight="600" fill="#241B36">'+total+'</text>'
+    +'<text x="70" y="84" text-anchor="middle" font-size="9" fill="#8A7FA3" font-family="Inter">participantes</text></svg>';
   const leg = '<div class="legenda">'+dados.map((d,i)=>'<div class="it"><span class="pt" style="background:'+corPara(i)+'"></span><span class="lab">'+d.rotulo+'</span><span class="val">'+d.valor+' · '+(d.valor/total*100).toFixed(0)+'%</span></div>').join('')+'</div>';
   el.innerHTML = svg+leg;
 }
@@ -711,7 +713,7 @@ function agregarMunicipios(){
 
 function renderAtencao(){
   const linhas = agregarMunicipios();
-  const cores={critico:'#b02a2a',baixo:'#9a4d05',sem:'#6c6478'};
+  const cores={critico:'#b02a2a',baixo:'#9a4d05',sem:'#4B3E63'};
   const prioritarios = linhas.filter(o=>o.nivel.classe==='critico'||o.nivel.classe==='sem')
     .sort((a,b)=>a.n-b.n);
   const al=document.getElementById('alertas');
@@ -852,7 +854,7 @@ function renderCrescimento(){
     const w2 = (h.atu/maxAtu*100).toFixed(1);
     chart.innerHTML += '<div class="cresc-row">'
       +'<span class="terr" title="'+h.territorio+'">'+h.territorio+'</span>'
-      +'<span class="barra-wrap"><span class="barra-label">'+h.ant+'</span><span class="track-g"><span class="fill-g" style="width:'+w1+'%;background:rgba(91,43,130,.35)"></span></span></span>'
+      +'<span class="barra-wrap"><span class="barra-label">'+h.ant+'</span><span class="track-g"><span class="fill-g" style="width:'+w1+'%;background:rgba(108,63,166,.35)"></span></span></span>'
       +'<span class="barra-wrap"><span class="barra-label">'+h.atu+'</span><span class="track-g"><span class="fill-g" style="width:'+w2+'%;background:var(--roxo)"></span></span></span>'
       +'<span class="delta '+dc+'">'+ds+'</span>'
       +'<span class="atual">'+h.atu+'</span>'
