@@ -376,19 +376,11 @@ const PAGE_SIZE = 25;
 
 function applyStudentFilters(){
   const s = studentsF.search.trim().toLowerCase();
-  const ci = studentsF.curso ? COURSES.indexOf(studentsF.curso) : -1;
   return ROWS.filter(r => {
     if(studentsF.estado && r.estado !== studentsF.estado) return false;
     if(studentsF.cidade && r.cidade !== studentsF.cidade) return false;
     if(s && !r.nome.toLowerCase().includes(s)) return false;
-    if(studentsF.status){
-      if(ci >= 0){ if(statusOf(r.p[ci]) !== studentsF.status) return false; }
-      else {
-        if(studentsF.status === 'c' && r.cc < 1) return false;
-        if(studentsF.status === 'p' && r.cp < 1) return false;
-        if(studentsF.status === 'n' && !(r.cc === 0 && r.cp === 0)) return false;
-      }
-    }
+    if(studentsF.status && studentStatusOf(r) !== studentsF.status) return false;
     return true;
   });
 }
@@ -396,8 +388,8 @@ function applyStudentFilters(){
 function studentStatusOf(r){
   const ci = studentsF.curso ? COURSES.indexOf(studentsF.curso) : -1;
   if(ci >= 0) return statusOf(r.p[ci]);
-  if(r.cc >= 1) return 'c';
   if(r.cp >= 1) return 'p';
+  if(r.cc >= 1) return 'c';
   return 'n';
 }
 
