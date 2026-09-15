@@ -1,0 +1,28 @@
+PAINEL CASA ARVORE - PUBLICACAO DA VERSAO COM BARREIRA DE ACESSO
+
+1. Estes arquivos devem substituir os arquivos de mesmo nome na pasta /painel do repositorio publicado.
+2. A senha nao esta gravada em texto puro nos HTML; os arquivos contem apenas o hash SHA-256 usado para comparacao no navegador.
+3. A liberacao usa sessionStorage: apos entrar, a navegacao entre os arquivos no mesmo contexto permanece liberada durante a sessao do navegador.
+4. O botao "Sair" encerra a autorizacao da sessao e retorna para index.html.
+5. Todos os HTML receberam:
+   - meta robots: noindex, nofollow, noarchive, nosnippet
+   - meta googlebot equivalente
+6. Esta e uma barreira primaria em site estatico. Ela nao substitui autenticacao de servidor.
+7. Nao publique novamente copias antigas sem a mesma barreira, pois URLs diretas dessas copias continuariam acessiveis.
+
+ARQUIVOS INCLUIDOS:
+- index.html
+- index_ori.html
+- painel-de-cursos.html
+- progresso-individual.html
+- 20260601.html
+- 20260603.html
+- 20260608.html
+- 20260622.html
+- 20260706.html
+- 20260729.html
+- 20260821.html
+- 20260908.html
+- 20260914.html
+- Painel_Progresso_Individual_09_09.html
+- Painel_Progresso_Individual_14_09.html
