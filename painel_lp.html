@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel de Chamados LP</title>
+<style>
+  /* layout: header -> KPI strip -> two-up chart row (situação / categoria) -> município bar -> open-items table -> footer note */
+  :root{
+    --bg:#f9f9f7; --surface:#fcfcfb; --surface-2:#ffffff;
+    --ink:#0b0b0b; --ink-2:#52514e; --muted:#898781;
+    --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,0.10);
+    --accent:#2a78d6; --accent-soft:#cde2fb;
+    --good:#0ca30c; --good-soft:#e3f6e3;
+    --warning:#c98500; --warning-soft:#fdf0d6;
+    --serious:#ec835a; --serious-soft:#fce6dc;
+    --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0d0d0d; --surface:#1a1a19; --surface-2:#201f1d;
+      --ink:#ffffff; --ink-2:#c3c2b7; --muted:#898781;
+      --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,0.10);
+      --accent:#3987e5; --accent-soft:#184f95;
+      --good:#0ca30c; --good-soft:#0f2a10;
+      --warning:#c98500; --warning-soft:#332405;
+      --serious:#ec835a; --serious-soft:#3a1f14;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0d0d0d; --surface:#1a1a19; --surface-2:#201f1d;
+    --ink:#ffffff; --ink-2:#c3c2b7; --muted:#898781;
+    --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,0.10);
+    --accent:#3987e5; --accent-soft:#184f95;
+    --good:#0ca30c; --good-soft:#0f2a10;
+    --warning:#c98500; --warning-soft:#332405;
+    --serious:#ec835a; --serious-soft:#3a1f14;
+    color-scheme: dark;
+  }
+
+  *{box-sizing:border-box}
+  body{background:var(--bg); color:var(--ink); font-family: system-ui,-apple-system,"Segoe UI",sans-serif; margin:0}
+  .wrap{max-width:980px; margin:0 auto; padding:28px 16px 48px; display:flex; flex-direction:column; gap:22px}
+
+  header.top{display:flex; flex-direction:column; gap:4px}
+  header.top .eyebrow{font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:600}
+  header.top h1{font-size:26px; margin:0; font-weight:700; text-wrap:balance}
+  header.top p{margin:2px 0 0; color:var(--ink-2); font-size:14px; max-width:60ch}
+
+  .kpis{display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
+  .kpi{background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 16px; display:flex; flex-direction:column; gap:4px; min-width:0}
+  .kpi .label{font-size:12px; color:var(--muted); font-weight:600; letter-spacing:.02em}
+  .kpi .value{font-size:28px; font-weight:700; font-variant-numeric:tabular-nums; line-height:1.1}
+  .kpi .sub{font-size:12px; color:var(--ink-2)}
+  .kpi.good .value{color:var(--good)}
+  .kpi.warn .value{color:var(--warning)}
+
+  .panel{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px}
+  .panel h2{font-size:14px; margin:0 0 2px; font-weight:700}
+  .panel .cap{font-size:12px; color:var(--muted); margin:0 0 14px}
+
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+
+  .hbar-list{display:flex; flex-direction:column; gap:10px}
+  .hbar-item{display:grid; grid-template-columns:150px 1fr 40px; align-items:center; gap:10px}
+  .hbar-item .lbl{font-size:13px; color:var(--ink-2); line-height:1.25}
+  .hbar-track{position:relative; height:16px; background:var(--grid); border-radius:4px; overflow:hidden}
+  .hbar-fill{position:absolute; inset:0 auto 0 0; height:100%; border-radius:4px; transition:filter .15s}
+  .hbar-fill:hover{filter:brightness(1.08)}
+  .hbar-item .val{font-size:13px; font-weight:700; font-variant-numeric:tabular-nums; text-align:right}
+
+  .legend{display:flex; gap:16px; flex-wrap:wrap; margin-top:14px; font-size:12px; color:var(--ink-2)}
+  .legend .dot{display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:6px; vertical-align:middle}
+
+  table{width:100%; border-collapse:collapse; font-size:13px}
+  thead th{text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); font-weight:600; padding:0 10px 8px; border-bottom:1px solid var(--border)}
+  tbody td{padding:10px 10px; border-bottom:1px solid var(--grid); vertical-align:top}
+  tbody tr:last-child td{border-bottom:none}
+  td.mono{font-family:var(--mono); font-size:12px; color:var(--ink-2); white-space:nowrap}
+  td.name{font-weight:600}
+  td.name .sub{display:block; font-weight:400; font-size:12px; color:var(--muted); margin-top:1px}
+  .pill{display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:999px; font-size:11px; font-weight:700; white-space:nowrap}
+  .pill.warning{background:var(--warning-soft); color:var(--warning)}
+  .pill.serious{background:var(--serious-soft); color:var(--serious)}
+  .pill .dot{width:6px; height:6px; border-radius:50%; background:currentColor}
+  .days{font-variant-numeric:tabular-nums; font-weight:700}
+  .days.stale{color:var(--serious)}
+  .days.fresh{color:var(--muted); font-weight:400}
+  .tblwrap{overflow-x:auto}
+
+  .tooltip{position:fixed; pointer-events:none; background:var(--ink); color:var(--bg); font-size:12px; padding:6px 9px; border-radius:6px; opacity:0; transform:translateY(4px); transition:opacity .1s, transform .1s; z-index:10; white-space:nowrap}
+  .tooltip.show{opacity:1; transform:translateY(0)}
+
+  footer.note{font-size:12px; color:var(--muted); line-height:1.6; padding-top:4px; border-top:1px solid var(--border)}
+  footer.note strong{color:var(--ink-2)}
+
+  @media (max-width:640px){
+    .kpis{grid-template-columns:repeat(2,1fr)}
+    .row2{grid-template-columns:1fr}
+    .hbar-item{grid-template-columns:110px 1fr 32px}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="top">
+    <span class="eyebrow">Passaporte para Aprendizagem · Territórios Conectados</span>
+    <h1>Painel de chamados do suporte</h1>
+    <p>Conversas de WhatsApp do canal de suporte, 15 de maio a 28 de setembro de 2026. Atualizado em 28/09/2026.</p>
+  </header>
+
+  <div class="kpis">
+    <div class="kpi">
+      <span class="label">Total de chamados</span>
+      <span class="value">41</span>
+      <span class="sub">conversas únicas</span>
+    </div>
+    <div class="kpi good">
+      <span class="label">Fechados</span>
+      <span class="value">31</span>
+      <span class="sub">76% do total</span>
+    </div>
+    <div class="kpi warn">
+      <span class="label">Em aberto</span>
+      <span class="value">10</span>
+      <span class="sub">24% do total</span>
+    </div>
+    <div class="kpi">
+      <span class="label">Município c/ mais chamados</span>
+      <span class="value" style="font-size:19px">Lagoa de Velhos/RN</span>
+      <span class="sub">13 chamados</span>
+    </div>
+  </div>
+
+  <div class="row2">
+    <div class="panel">
+      <h2>Chamados por situação</h2>
+      <p class="cap">Os 41 chamados, por estado atual</p>
+      <div class="hbar-list" id="chart-situacao"></div>
+    </div>
+    <div class="panel">
+      <h2>Chamados em aberto, por tipo</h2>
+      <p class="cap">Os 10 chamados abertos, por quem precisa agir</p>
+      <div class="hbar-list" id="chart-pendente"></div>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--warning)"></span>Usuário não confirmou (4)</span>
+        <span><span class="dot" style="background:var(--serious)"></span>Suporte/UNICEF — certificado (6)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Chamados por município</h2>
+    <p class="cap">Os 41 chamados, todas as situações — ordenado do maior volume ao menor</p>
+    <div class="hbar-list" id="chart-municipio"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Os 10 chamados em aberto</h2>
+    <p class="cap">Agrupado por quem precisa agir (certificado, depois usuário) — todos com contato mais recente hoje</p>
+    <div class="tblwrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Contato</th>
+            <th>Telefone</th>
+            <th>Município</th>
+            <th>Tipo</th>
+            <th>Situação</th>
+            <th>Parado há</th>
+          </tr>
+        </thead>
+        <tbody id="tbl-abertos"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer class="note">
+    <strong>Fonte:</strong> exportações de WhatsApp do canal de suporte do Passaporte para Aprendizagem (Learning Passport Brasil), consolidadas com o relatório anterior (15/05–21/07). Os telefones de Márcia (Sec. Educação de Pedro Avelino) e de Donivaldo Sousa da Silva (coordenador de Lagoa de Velhos) reúnem vários beneficiários repassados por eles — cada um conta como um chamado. Painel estático: não se atualiza sozinho quando a planilha muda.
+  </footer>
+
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var situacao = [
+    {label:"Fechado", value:31, color:"var(--good)"},
+    {label:"Aguardando usuário", value:4, color:"var(--warning)"},
+    {label:"Aguardando certificado", value:6, color:"var(--serious)"}
+  ];
+
+  var pendente = [
+    {label:"Certificado (Suporte/UNICEF)", value:6, color:"var(--serious)"},
+    {label:"Usuário (sem retorno)", value:4, color:"var(--warning)"}
+  ];
+
+  var municipio = [
+    {label:"Lagoa de Velhos/RN", value:13},
+    {label:"Caucaia/CE", value:8},
+    {label:"Não informado", value:6},
+    {label:"Extremoz/RN", value:5},
+    {label:"Touros/RN", value:3},
+    {label:"Bequimão/MA", value:2},
+    {label:"Pedro Avelino/RN", value:2},
+    {label:"Boa Vista/RR", value:1},
+    {label:"Cerro Corá/RN", value:1}
+  ];
+
+  var abertos = [
+    {nome:"Melina", tel:"+55 84 8143-7374", mun:"RN (sem cidade)", tipo:"Certificado", situ:"serious", situLbl:"Aguardando certificado", dias:0},
+    {nome:"Dalvenice", sub:"não confirmado", tel:"+55 84 9421-4574", mun:"Lagoa de Velhos/RN", tipo:"Certificado", situ:"serious", situLbl:"Aguardando certificado", dias:0},
+    {nome:"Lucilene", tel:"+55 85 8700-9903", mun:"Caucaia/CE", tipo:"Certificado", situ:"serious", situLbl:"Aguardando certificado", dias:0},
+    {nome:"Isabel Cristina Coutinho Queiroz", tel:"+55 85 8836-4311", mun:"Caucaia/CE", tipo:"Certificado", situ:"serious", situLbl:"Aguardando certificado", dias:0},
+    {nome:"Juanita Nadine Bacchus", tel:"+55 95 9125-7402", mun:"Boa Vista/RR", tipo:"Certificado", situ:"serious", situLbl:"Aguardando certificado", dias:0},
+    {nome:"Ana Lúcia da Silva Cantanhede", tel:"+55 98 8299-6504", mun:"Bequimão/MA", tipo:"Certificado", situ:"serious", situLbl:"Aguardando certificado", dias:0},
+    {nome:"Donivaldo Sousa da Silva", sub:"hub — repassa casos de Lagoa de Velhos", tel:"+55 84 8180-6825", mun:"Lagoa de Velhos/RN", tipo:"Acesso/cadastro", situ:"warning", situLbl:"Aguardando usuário", dias:0},
+    {nome:"Hozaneide", tel:"+55 84 92164-8989", mun:"Extremoz/RN", tipo:"Acesso/cadastro", situ:"warning", situLbl:"Aguardando usuário", dias:0},
+    {nome:"Vanderleia", sub:"Joseleide", tel:"+55 84 9444-1355", mun:"Extremoz/RN", tipo:"Acesso/cadastro", situ:"warning", situLbl:"Aguardando usuário", dias:0},
+    {nome:"Não informado", tel:"+55 85 9131-9692", mun:"Caucaia/CE", tipo:"Acesso/cadastro", situ:"warning", situLbl:"Aguardando usuário", dias:0}
+  ];
+
+  var tip = document.getElementById("tooltip");
+  function showTip(e, text){
+    tip.textContent = text;
+    tip.classList.add("show");
+    moveTip(e);
+  }
+  function moveTip(e){
+    var x = e.clientX, y = e.clientY;
+    tip.style.left = Math.min(x + 12, window.innerWidth - tip.offsetWidth - 8) + "px";
+    tip.style.top = (y - 34) + "px";
+  }
+  function hideTip(){ tip.classList.remove("show"); }
+
+  function renderBars(containerId, data, opts){
+    opts = opts || {};
+    var max = opts.max || Math.max.apply(null, data.map(function(d){ return d.value; }));
+    var container = document.getElementById(containerId);
+    data.forEach(function(d){
+      var item = document.createElement("div");
+      item.className = "hbar-item";
+
+      var lbl = document.createElement("span");
+      lbl.className = "lbl";
+      lbl.textContent = d.label;
+
+      var track = document.createElement("div");
+      track.className = "hbar-track";
+      var fill = document.createElement("div");
+      fill.className = "hbar-fill";
+      var pct = max ? (d.value / max * 100) : 0;
+      fill.style.width = Math.max(pct, d.value > 0 ? 3 : 0) + "%";
+      fill.style.background = d.color || "var(--accent)";
+      fill.addEventListener("mousemove", function(e){ showTip(e, d.label + ": " + d.value); });
+      fill.addEventListener("mouseleave", hideTip);
+      track.appendChild(fill);
+
+      var val = document.createElement("span");
+      val.className = "val";
+      val.textContent = d.value;
+
+      item.appendChild(lbl);
+      item.appendChild(track);
+      item.appendChild(val);
+      container.appendChild(item);
+    });
+  }
+
+  renderBars("chart-situacao", situacao);
+  renderBars("chart-pendente", pendente, {max: 10});
+  renderBars("chart-municipio", municipio);
+
+  var tbody = document.getElementById("tbl-abertos");
+  abertos.forEach(function(a){
+    var tr = document.createElement("tr");
+
+    var tdName = document.createElement("td");
+    tdName.className = "name";
+    tdName.textContent = a.nome;
+    if (a.sub){
+      var sub = document.createElement("span");
+      sub.className = "sub";
+      sub.textContent = a.sub;
+      tdName.appendChild(sub);
+    }
+
+    var tdTel = document.createElement("td");
+    tdTel.className = "mono";
+    tdTel.textContent = a.tel;
+
+    var tdMun = document.createElement("td");
+    tdMun.textContent = a.mun;
+
+    var tdTipo = document.createElement("td");
+    tdTipo.textContent = a.tipo;
+
+    var tdSitu = document.createElement("td");
+    var pill = document.createElement("span");
+    pill.className = "pill " + a.situ;
+    var dot = document.createElement("span");
+    dot.className = "dot";
+    pill.appendChild(dot);
+    pill.appendChild(document.createTextNode(a.situLbl));
+    tdSitu.appendChild(pill);
+
+    var tdDias = document.createElement("td");
+    var days = document.createElement("span");
+    days.className = "days " + (a.dias >= 14 ? "stale" : "fresh");
+    days.textContent = a.dias === 0 ? "hoje" : a.dias + " dias";
+    tdDias.appendChild(days);
+
+    tr.appendChild(tdName);
+    tr.appendChild(tdTel);
+    tr.appendChild(tdMun);
+    tr.appendChild(tdTipo);
+    tr.appendChild(tdSitu);
+    tr.appendChild(tdDias);
+    tbody.appendChild(tr);
+  });
+})();
+</script>
+
+</body>
+</html>
