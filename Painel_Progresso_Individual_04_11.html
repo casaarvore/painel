@@ -142,6 +142,8 @@
   .nc-sit .it{ border-left:4px solid var(--track); padding:2px 0 2px 10px; }
   .nc-sit .it .n{ font-family:'JetBrains Mono', monospace; font-weight:700; font-size:21px; color:var(--primary-dark); }
   .nc-sit .it .l{ font-size:11.5px; color:var(--muted); line-height:1.35; }
+  .nc-sit .it .l.sub{ margin-top:3px; font-family:'JetBrains Mono', monospace; font-size:10.5px; color:var(--ink-soft); }
+  .nc-hint b{ color:var(--primary-dark); }
   .nc-est-row{ display:grid; grid-template-columns:150px 1fr 210px; gap:12px; align-items:center; padding:5px 0; }
   .nc-est-row .en{ font-size:12.5px; color:var(--ink-soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .nc-est-row .bar{ display:flex; height:16px; border-radius:6px; overflow:hidden; background:var(--track); }
@@ -217,9 +219,10 @@
       </div>
       <div class="nc-card">
         <h3>Situação geral dos alunos</h3>
-        <div class="nc-note">Considerando todos os cursos</div>
+        <div class="nc-note">Os mesmos alunos da rosca, agrupados por situação: o verde é a soma das 3 fatias verdes</div>
         <div class="nc-stack" id="ncStack"></div>
         <div class="nc-sit" id="ncSit"></div>
+        <div class="nc-hint" id="ncSitNote"></div>
       </div>
       <div class="nc-card wide">
         <h3>Alunos com cursos concluídos, por estado</h3>
@@ -762,17 +765,26 @@ function renderNcCharts(){
       <span class="sw" style="background:${b.color}"></span><span>${b.label}</span><span class="v">${fmt(b.n)}</span><span class="pc">${pct(b.n,total)}</span></button>`).join('');
   leg.querySelectorAll('button').forEach(el => el.addEventListener('click', () => ncSetConcl(el.dataset.k)));
 
-  /* 2) situacao geral */
-  const c1 = pool.filter(r => r.cc >= 1).length;
+  /* 2) situacao geral (reconcilia com a rosca: 585 = 260 + 102 + 223 ; 1.460 = 829 + 631) */
+  const n1 = bands[1].n, n2 = bands[2].n, n3 = bands[3].n;
+  const c1 = n1 + n2 + n3;
   const c2 = pool.filter(r => r.cc === 0 && r.cp >= 1).length;
   const c3 = pool.filter(r => r.cc === 0 && r.cp === 0).length;
-  const sit = [
-    { n:c1, color:'var(--success)', label:'Concluíram pelo menos 1 curso' },
-    { n:c2, color:'var(--warn)',    label:'Só em andamento (nenhum concluído)' },
-    { n:c3, color:'var(--track)',   label:'Não iniciaram nenhum curso' },
+  const segs = [
+    { n:n1, color:'#9BDDBD', label:'Concluíram 1 curso' },
+    { n:n2, color:'#45C98A', label:'Concluíram 2 cursos' },
+    { n:n3, color:'#1F9A63', label:'Concluíram 3 ou mais cursos' },
+    { n:c2, color:'var(--warn)',  label:'Só em andamento (nenhum concluído)' },
+    { n:c3, color:'var(--track)', label:'Não iniciaram nenhum curso' },
   ];
-  document.getElementById('ncStack').innerHTML = sit.map(s => `<div style="width:${total ? s.n/total*100 : 0}%;background:${s.color}" title="${s.label}: ${fmt(s.n)}"></div>`).join('');
-  document.getElementById('ncSit').innerHTML = sit.map(s => `<div class="it" style="border-left-color:${s.color}"><div class="n">${fmt(s.n)} <span style="font-size:12px;color:var(--muted);font-weight:600">${pct(s.n,total)}</span></div><div class="l">${s.label}</div></div>`).join('');
+  document.getElementById('ncStack').innerHTML = segs.map(s => `<div style="width:${total ? s.n/total*100 : 0}%;background:${s.color}" title="${s.label}: ${fmt(s.n)}"></div>`).join('');
+  const grp = [
+    { n:c1, color:'var(--success)', label:'Concluíram pelo menos 1 curso', sub:`= ${fmt(n1)} (1 curso) + ${fmt(n2)} (2 cursos) + ${fmt(n3)} (3 ou mais)` },
+    { n:c2, color:'var(--warn)',    label:'Só em andamento', sub:'iniciaram, mas nenhum concluído' },
+    { n:c3, color:'#C9C1DA',        label:'Não iniciaram nenhum curso', sub:'' },
+  ];
+  document.getElementById('ncSit').innerHTML = grp.map(s => `<div class="it" style="border-left-color:${s.color}"><div class="n">${fmt(s.n)} <span style="font-size:12px;color:var(--muted);font-weight:600">${pct(s.n,total)}</span></div><div class="l">${s.label}</div>${s.sub ? `<div class="l sub">${s.sub}</div>` : ''}</div>`).join('');
+  document.getElementById('ncSitNote').innerHTML = `Sem nenhum curso concluído: <b>${fmt(c2+c3)}</b> (${fmt(c2)} em andamento + ${fmt(c3)} que não iniciaram) — é a fatia cinza da rosca ao lado.`;
 
   /* 3) por estado */
   const byE = {};
