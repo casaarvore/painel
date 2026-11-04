@@ -105,6 +105,16 @@
   .empty-state{ padding:50px 20px; text-align:center; color:var(--muted); font-size:14px; }
   footer{ margin-top:36px; text-align:center; font-size:11.5px; color:var(--muted); font-family:'JetBrains Mono', monospace; }
 
+
+  /* ===== Alunos por numero de cursos ===== */
+  .nc-num{ display:inline-block; min-width:30px; text-align:center; padding:3px 10px; border-radius:20px; font-family:'JetBrains Mono', monospace; font-size:12px; font-weight:700; }
+  .nc-num.c{ background:var(--success-tint); color:var(--success); }
+  .nc-num.p{ background:var(--warn-tint); color:#B27A18; }
+  .nc-num.z{ background:var(--track); color:var(--muted); }
+  #ncTable th.num, #ncTable td.num{ text-align:center; }
+  .nc-filter-label{ font-size:11.5px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.05em; }
+  .nc-filter-group{ display:flex; align-items:center; gap:6px; }
+
   @media (max-width: 980px){
     .stats{ grid-template-columns:repeat(2, 1fr); }
     .course-row{ grid-template-columns:1fr; grid-template-rows:auto auto auto; gap:4px; }
@@ -192,6 +202,51 @@
           <button id="prevPg">‹ Anterior</button>
           <button id="nextPg">Próxima ›</button>
           <button id="lastPg">Última »</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===== Alunos por numero de cursos ===== -->
+  <section class="panel" id="alunosPorCursos">
+    <div class="section-title">Alunos por número de cursos</div>
+    <div class="section-sub">Quantos cursos cada aluno concluiu (100%) e quantos iniciou e ainda não concluiu</div>
+    <div class="mini-filters">
+      <input type="text" id="ncSearch" placeholder="Buscar por nome...">
+      <select id="ncEstado"><option value="">Todos os estados</option></select>
+      <select id="ncCidade"><option value="">Todas as cidades</option></select>
+      <span class="nc-filter-group"><span class="nc-filter-label">Concluídos</span>
+        <select id="ncConcl">
+          <option value="">Todos</option>
+          <option value="1">1 curso</option>
+          <option value="2">2 cursos</option>
+          <option value="3">3 ou mais cursos</option>
+        </select></span>
+      <span class="nc-filter-group"><span class="nc-filter-label">Iniciados e não concluídos</span>
+        <select id="ncProg">
+          <option value="">Todos</option>
+          <option value="1">1 curso</option>
+          <option value="2">2 cursos</option>
+          <option value="3">3 ou mais cursos</option>
+        </select></span>
+      <button class="btn-clear" id="ncClear">Limpar filtros</button>
+    </div>
+    <div class="result-count" id="ncCount"></div>
+    <div class="table-wrap">
+      <div style="overflow-x:auto;">
+        <table id="ncTable">
+          <thead id="ncHead"></thead>
+          <tbody id="ncBody"></tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <div id="ncPageInfo"></div>
+        <div class="pg-btns">
+          <button id="ncFirst">« Primeira</button>
+          <button id="ncPrev">‹ Anterior</button>
+          <button id="ncNext">Próxima ›</button>
+          <button id="ncLast">Última »</button>
         </div>
       </div>
     </div>
@@ -504,10 +559,96 @@ function bindStudentFilters(){
   document.getElementById('lastPg').addEventListener('click', () => { page=window._totalPages||1; renderTable(); });
 }
 
+
+/* =========================================================
+   ALUNOS POR NUMERO DE CURSOS
+   cc = cursos concluidos (100%); cp = cursos iniciados e nao concluidos (1-99%)
+   ========================================================= */
+let ncF = { search:'', estado:'', cidade:'', concl:'', prog:'' };
+let ncSortKey = 'cc', ncSortDir = -1, ncPage = 1;
+const NC_PAGE_SIZE = 25;
+
+function ncBand(val, f){ if(!f) return true; const n = +f; return n >= 3 ? val >= 3 : val === n; }
+function ncFiltered(){
+  const s = ncF.search.trim().toLowerCase();
+  return ROWS.filter(r =>
+    (!ncF.estado || r.estado === ncF.estado) && (!ncF.cidade || r.cidade === ncF.cidade) &&
+    (!s || r.nome.toLowerCase().includes(s)) && ncBand(r.cc, ncF.concl) && ncBand(r.cp, ncF.prog));
+}
+function ncSorted(arr){
+  return [...arr].sort((a,b) => {
+    let av = a[ncSortKey], bv = b[ncSortKey];
+    if(typeof av === 'string'){ av = (av||'').toLowerCase(); bv = (bv||'').toLowerCase(); }
+    if(av < bv) return -1*ncSortDir;
+    if(av > bv) return 1*ncSortDir;
+    const an = a.nome.toLowerCase(), bn = b.nome.toLowerCase();
+    return an < bn ? -1 : an > bn ? 1 : 0;
+  });
+}
+function ncNum(n, cls){ return `<span class="nc-num ${n>0 ? cls : 'z'}">${n}</span>`; }
+
+function renderNc(){
+  const cols = [['nome','Nome',''],['estado','Estado',''],['cidade','Município',''],['cc','Cursos concluídos (100%)','num'],['cp','Iniciados e não concluídos','num']];
+  const thead = document.getElementById('ncHead');
+  thead.innerHTML = '<tr>' + cols.map(c => `<th data-key="${c[0]}" class="${c[2]}${c[0]===ncSortKey?' sorted':''}">${c[1]} <span class="arrow">${c[0]===ncSortKey ? (ncSortDir===1?'▴':'▾') : '▾'}</span></th>`).join('') + '</tr>';
+  thead.querySelectorAll('th[data-key]').forEach(th => th.addEventListener('click', () => {
+    const k = th.dataset.key;
+    if(ncSortKey === k){ ncSortDir *= -1; } else { ncSortKey = k; ncSortDir = (k==='cc'||k==='cp') ? -1 : 1; }
+    renderNc();
+  }));
+
+  const filtered = ncSorted(ncFiltered());
+  const total = filtered.length;
+  const totalPages = Math.max(1, Math.ceil(total / NC_PAGE_SIZE));
+  if(ncPage > totalPages) ncPage = totalPages;
+  const rows = filtered.slice((ncPage-1)*NC_PAGE_SIZE, ncPage*NC_PAGE_SIZE);
+
+  document.getElementById('ncCount').innerHTML = `<strong>${fmt(total)}</strong> aluno(s) encontrados com os filtros atuais`;
+  document.getElementById('ncBody').innerHTML = rows.length ? rows.map(r => `<tr>
+      <td class="nome" title="${r.nome}">${r.nome}</td>
+      <td>${r.estado}</td>
+      <td>${r.cidade}</td>
+      <td class="num">${ncNum(r.cc,'c')}</td>
+      <td class="num">${ncNum(r.cp,'p')}</td>
+    </tr>`).join('') : `<tr><td colspan="5"><div class="empty-state">Nenhum registro encontrado com esses filtros.</div></td></tr>`;
+
+  document.getElementById('ncPageInfo').textContent = `Página ${ncPage} de ${totalPages}`;
+  document.getElementById('ncFirst').disabled = ncPage <= 1;
+  document.getElementById('ncPrev').disabled = ncPage <= 1;
+  document.getElementById('ncNext').disabled = ncPage >= totalPages;
+  document.getElementById('ncLast').disabled = ncPage >= totalPages;
+  window._ncTotalPages = totalPages;
+}
+
+function initNc(){
+  const est = document.getElementById('ncEstado');
+  [...new Set(ROWS.map(r=>r.estado))].sort().forEach(e => { const o=document.createElement('option'); o.value=e; o.textContent=e; est.appendChild(o); });
+  const fillCid = () => {
+    const pool = ncF.estado ? ROWS.filter(r=>r.estado===ncF.estado) : ROWS;
+    document.getElementById('ncCidade').innerHTML = '<option value="">Todas as cidades</option>' + [...new Set(pool.map(r=>r.cidade))].sort().map(c=>`<option value="${c}">${c}</option>`).join('');
+  };
+  fillCid();
+  document.getElementById('ncSearch').addEventListener('input', e => { ncF.search = e.target.value; ncPage=1; renderNc(); });
+  est.addEventListener('change', e => { ncF.estado = e.target.value; ncF.cidade=''; fillCid(); ncPage=1; renderNc(); });
+  document.getElementById('ncCidade').addEventListener('change', e => { ncF.cidade = e.target.value; ncPage=1; renderNc(); });
+  document.getElementById('ncConcl').addEventListener('change', e => { ncF.concl = e.target.value; ncPage=1; renderNc(); });
+  document.getElementById('ncProg').addEventListener('change', e => { ncF.prog = e.target.value; ncPage=1; renderNc(); });
+  document.getElementById('ncClear').addEventListener('click', () => {
+    ncF = { search:'', estado:'', cidade:'', concl:'', prog:'' };
+    ['ncSearch','ncEstado','ncConcl','ncProg'].forEach(id => document.getElementById(id).value = '');
+    fillCid(); ncPage = 1; renderNc();
+  });
+  document.getElementById('ncFirst').addEventListener('click', () => { ncPage=1; renderNc(); });
+  document.getElementById('ncPrev').addEventListener('click', () => { ncPage=Math.max(1,ncPage-1); renderNc(); });
+  document.getElementById('ncNext').addEventListener('click', () => { ncPage=Math.min(window._ncTotalPages||1,ncPage+1); renderNc(); });
+  document.getElementById('ncLast').addEventListener('click', () => { ncPage=window._ncTotalPages||1; renderNc(); });
+}
+
 /* ---------- Init ---------- */
 populateStatsFilters(); bindStatsFilters(); renderStats();
 populateCourseFilters(); bindCourseFilters(); renderCourseBars();
 populateStudentFilters(); bindStudentFilters(); renderTable();
+initNc(); renderNc();
 </script>
 </body>
 </html>
