@@ -115,6 +115,47 @@
   .nc-filter-label{ font-size:11.5px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.05em; }
   .nc-filter-group{ display:flex; align-items:center; gap:6px; }
 
+
+  /* ===== Painel grafico (Alunos por numero de cursos) ===== */
+  .nc-charts{ display:grid; grid-template-columns:1.1fr 1fr; gap:16px; margin:4px 0 22px; }
+  .nc-card{ border:1px solid var(--border); border-radius:14px; padding:18px 20px; background:var(--surface); }
+  .nc-card.wide{ grid-column:1 / -1; }
+  .nc-card h3{ font-family:'Fraunces', serif; font-weight:600; font-size:15.5px; margin:0 0 2px; color:var(--ink); }
+  .nc-card .nc-note{ font-size:12px; color:var(--muted); margin-bottom:14px; }
+  .nc-donut-wrap{ display:flex; align-items:center; gap:22px; flex-wrap:wrap; }
+  .nc-donut{ width:190px; height:190px; flex:0 0 auto; }
+  .nc-donut .seg{ cursor:pointer; transition:opacity .15s ease, stroke-width .15s ease; }
+  .nc-donut.has-active .seg:not(.on){ opacity:.35; }
+  .nc-donut .seg:focus-visible{ outline:none; stroke-width:34; }
+  .nc-donut text{ pointer-events:none; font-family:'JetBrains Mono', monospace; text-anchor:middle; fill:var(--primary-dark); }
+  .nc-legend{ flex:1; min-width:170px; display:flex; flex-direction:column; gap:6px; }
+  .nc-legend button{ display:grid; grid-template-columns:12px 1fr auto auto; gap:9px; align-items:center; text-align:left;
+    border:1px solid transparent; background:transparent; padding:6px 8px; border-radius:9px; cursor:pointer; font-family:'Inter', sans-serif; font-size:12.5px; color:var(--ink-soft); }
+  .nc-legend button:hover, .nc-legend button.on{ background:var(--primary-tint); border-color:var(--border); }
+  .nc-legend .sw{ width:12px; height:12px; border-radius:4px; }
+  .nc-legend .v{ font-family:'JetBrains Mono', monospace; font-weight:700; color:var(--ink); }
+  .nc-legend .pc{ font-family:'JetBrains Mono', monospace; color:var(--muted); font-size:11.5px; min-width:42px; text-align:right; }
+  .nc-hint{ font-size:11.5px; color:var(--muted); margin-top:10px; }
+  .nc-stack{ display:flex; height:30px; border-radius:9px; overflow:hidden; background:var(--track); margin:6px 0 14px; }
+  .nc-stack > div{ min-width:0; transition:width .2s ease; }
+  .nc-sit{ display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; }
+  .nc-sit .it{ border-left:4px solid var(--track); padding:2px 0 2px 10px; }
+  .nc-sit .it .n{ font-family:'JetBrains Mono', monospace; font-weight:700; font-size:21px; color:var(--primary-dark); }
+  .nc-sit .it .l{ font-size:11.5px; color:var(--muted); line-height:1.35; }
+  .nc-est-row{ display:grid; grid-template-columns:150px 1fr 210px; gap:12px; align-items:center; padding:5px 0; }
+  .nc-est-row .en{ font-size:12.5px; color:var(--ink-soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .nc-est-row .bar{ display:flex; height:16px; border-radius:6px; overflow:hidden; background:var(--track); }
+  .nc-est-row .nums{ font-family:'JetBrains Mono', monospace; font-size:11.5px; color:var(--muted); text-align:right; white-space:nowrap; }
+  .nc-est-row .nums b{ color:var(--success); }
+  .nc-est-legend{ display:flex; gap:16px; flex-wrap:wrap; margin-top:12px; font-size:12px; color:var(--ink-soft); }
+  .nc-est-legend .dot{ width:10px; height:10px; border-radius:3px; display:inline-block; margin-right:6px; vertical-align:-1px; }
+  @media (max-width: 980px){
+    .nc-charts{ grid-template-columns:1fr; }
+    .nc-est-row{ grid-template-columns:1fr; gap:3px; }
+    .nc-est-row .nums{ text-align:left; }
+    .nc-sit{ grid-template-columns:1fr; }
+  }
+
   @media (max-width: 980px){
     .stats{ grid-template-columns:repeat(2, 1fr); }
     .course-row{ grid-template-columns:1fr; grid-template-rows:auto auto auto; gap:4px; }
@@ -137,6 +178,80 @@
     </div>
     <div class="updated" id="updatedAt"></div>
   </header>
+
+  <!-- ===== Alunos por numero de cursos ===== -->
+  <section class="panel" id="alunosPorCursos">
+    <div class="section-title">Alunos por número de cursos</div>
+    <div class="section-sub">Quantos cursos cada aluno concluiu (100%) e quantos iniciou e ainda não concluiu</div>
+    <div class="mini-filters">
+      <input type="text" id="ncSearch" placeholder="Buscar por nome...">
+      <select id="ncEstado"><option value="">Todos os estados</option></select>
+      <select id="ncCidade"><option value="">Todas as cidades</option></select>
+      <span class="nc-filter-group"><span class="nc-filter-label">Concluídos</span>
+        <select id="ncConcl">
+          <option value="">Todos</option>
+          <option value="0">Nenhum curso</option>
+          <option value="1">1 curso</option>
+          <option value="2">2 cursos</option>
+          <option value="3">3 ou mais cursos</option>
+        </select></span>
+      <span class="nc-filter-group"><span class="nc-filter-label">Iniciados e não concluídos</span>
+        <select id="ncProg">
+          <option value="">Todos</option>
+          <option value="1">1 curso</option>
+          <option value="2">2 cursos</option>
+          <option value="3">3 ou mais cursos</option>
+        </select></span>
+      <button class="btn-clear" id="ncClear">Limpar filtros</button>
+    </div>
+
+    <div class="nc-charts" id="ncCharts">
+      <div class="nc-card">
+        <h3>Cursos concluídos por aluno</h3>
+        <div class="nc-note">Quantos alunos concluíram 1, 2 ou 3 ou mais cursos (100%)</div>
+        <div class="nc-donut-wrap">
+          <svg class="nc-donut" id="ncDonut" viewBox="0 0 200 200" role="img" aria-label="Alunos por número de cursos concluídos"></svg>
+          <div class="nc-legend" id="ncLegend"></div>
+        </div>
+        <div class="nc-hint">Clique numa fatia ou na legenda para filtrar a tabela abaixo.</div>
+      </div>
+      <div class="nc-card">
+        <h3>Situação geral dos alunos</h3>
+        <div class="nc-note">Considerando todos os cursos</div>
+        <div class="nc-stack" id="ncStack"></div>
+        <div class="nc-sit" id="ncSit"></div>
+      </div>
+      <div class="nc-card wide">
+        <h3>Alunos com cursos concluídos, por estado</h3>
+        <div class="nc-note">Alunos que concluíram 1, 2 ou 3 ou mais cursos, em cada estado</div>
+        <div id="ncEstBars"></div>
+        <div class="nc-est-legend">
+          <span><span class="dot" style="background:#9BDDBD"></span>1 curso</span>
+          <span><span class="dot" style="background:#45C98A"></span>2 cursos</span>
+          <span><span class="dot" style="background:var(--success)"></span>3 ou mais cursos</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="result-count" id="ncCount"></div>
+    <div class="table-wrap">
+      <div style="overflow-x:auto;">
+        <table id="ncTable">
+          <thead id="ncHead"></thead>
+          <tbody id="ncBody"></tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <div id="ncPageInfo"></div>
+        <div class="pg-btns">
+          <button id="ncFirst">« Primeira</button>
+          <button id="ncPrev">‹ Anterior</button>
+          <button id="ncNext">Próxima ›</button>
+          <button id="ncLast">Última »</button>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- ===== Painel geral (stats) ===== -->
   <section class="panel">
@@ -169,7 +284,7 @@
   </section>
 
   <!-- ===== Alunos ===== -->
-  <section class="panel">
+  <section class="panel" id="secAlunos">
     <div class="section-title">Alunos</div>
     <div class="section-sub" id="tableSub">Status geral considerando todos os cursos</div>
     <div class="mini-filters">
@@ -208,49 +323,6 @@
   </section>
 
 
-  <!-- ===== Alunos por numero de cursos ===== -->
-  <section class="panel" id="alunosPorCursos">
-    <div class="section-title">Alunos por número de cursos</div>
-    <div class="section-sub">Quantos cursos cada aluno concluiu (100%) e quantos iniciou e ainda não concluiu</div>
-    <div class="mini-filters">
-      <input type="text" id="ncSearch" placeholder="Buscar por nome...">
-      <select id="ncEstado"><option value="">Todos os estados</option></select>
-      <select id="ncCidade"><option value="">Todas as cidades</option></select>
-      <span class="nc-filter-group"><span class="nc-filter-label">Concluídos</span>
-        <select id="ncConcl">
-          <option value="">Todos</option>
-          <option value="1">1 curso</option>
-          <option value="2">2 cursos</option>
-          <option value="3">3 ou mais cursos</option>
-        </select></span>
-      <span class="nc-filter-group"><span class="nc-filter-label">Iniciados e não concluídos</span>
-        <select id="ncProg">
-          <option value="">Todos</option>
-          <option value="1">1 curso</option>
-          <option value="2">2 cursos</option>
-          <option value="3">3 ou mais cursos</option>
-        </select></span>
-      <button class="btn-clear" id="ncClear">Limpar filtros</button>
-    </div>
-    <div class="result-count" id="ncCount"></div>
-    <div class="table-wrap">
-      <div style="overflow-x:auto;">
-        <table id="ncTable">
-          <thead id="ncHead"></thead>
-          <tbody id="ncBody"></tbody>
-        </table>
-      </div>
-      <div class="pagination">
-        <div id="ncPageInfo"></div>
-        <div class="pg-btns">
-          <button id="ncFirst">« Primeira</button>
-          <button id="ncPrev">‹ Anterior</button>
-          <button id="ncNext">Próxima ›</button>
-          <button id="ncLast">Última »</button>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <footer>Painel gerado a partir da base consolidada de 21 cursos — Learning Passport Brasil</footer>
 </div>
@@ -394,7 +466,7 @@ function renderCourseBars(){
       document.getElementById('cursoFilter').value = studentsF.curso;
       page = 1;
       renderTable();
-      document.querySelector('.panel:nth-of-type(3)')?.scrollIntoView({behavior:'smooth', block:'start'});
+      document.getElementById('secAlunos')?.scrollIntoView({behavior:'smooth', block:'start'});
     });
   });
 }
@@ -618,6 +690,7 @@ function renderNc(){
   document.getElementById('ncNext').disabled = ncPage >= totalPages;
   document.getElementById('ncLast').disabled = ncPage >= totalPages;
   window._ncTotalPages = totalPages;
+  renderNcCharts();
 }
 
 function initNc(){
@@ -642,6 +715,77 @@ function initNc(){
   document.getElementById('ncPrev').addEventListener('click', () => { ncPage=Math.max(1,ncPage-1); renderNc(); });
   document.getElementById('ncNext').addEventListener('click', () => { ncPage=Math.min(window._ncTotalPages||1,ncPage+1); renderNc(); });
   document.getElementById('ncLast').addEventListener('click', () => { ncPage=window._ncTotalPages||1; renderNc(); });
+}
+
+
+/* ---------- Painel grafico: Alunos por numero de cursos ---------- */
+function ncChartPool(){
+  const s = ncF.search.trim().toLowerCase();
+  return ROWS.filter(r => (!ncF.estado || r.estado===ncF.estado) && (!ncF.cidade || r.cidade===ncF.cidade) && (!s || r.nome.toLowerCase().includes(s)));
+}
+function ncSetConcl(k){
+  ncF.concl = (ncF.concl === k) ? '' : k;
+  document.getElementById('ncConcl').value = ncF.concl;
+  ncPage = 1; renderNc();
+}
+function renderNcCharts(){
+  const pool = ncChartPool(), total = pool.length;
+  const pct = (n, t) => t ? (n / t * 100).toLocaleString('pt-BR', {maximumFractionDigits:1}) + '%' : '0%';
+
+  /* 1) rosca: cursos concluidos por aluno */
+  const bands = [
+    { k:'0', label:'Nenhum curso concluído', color:'#D9D3E6', n:pool.filter(r => r.cc===0).length },
+    { k:'1', label:'1 curso',                color:'#9BDDBD', n:pool.filter(r => r.cc===1).length },
+    { k:'2', label:'2 cursos',               color:'#45C98A', n:pool.filter(r => r.cc===2).length },
+    { k:'3', label:'3 ou mais cursos',       color:'#1F9A63', n:pool.filter(r => r.cc>=3).length },
+  ];
+  const R = 70, C = 2*Math.PI*R; let off = 0;
+  const hasActive = bands.some(b => ncF.concl === b.k);
+  let svg = `<circle cx="100" cy="100" r="${R}" fill="none" stroke="#F1EDF8" stroke-width="28"/>`;
+  bands.forEach(b => {
+    if(!b.n || !total) return;
+    const len = b.n / total * C, on = ncF.concl === b.k;
+    svg += `<circle class="seg${on?' on':''}" cx="100" cy="100" r="${R}" fill="none" stroke="${b.color}" stroke-width="${on?34:28}"
+      stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 100 100)" tabindex="0" role="button"
+      aria-label="${b.label}: ${b.n} alunos" data-k="${b.k}"><title>${b.label}: ${fmt(b.n)} (${pct(b.n,total)})</title></circle>`;
+    off += len;
+  });
+  svg += `<text x="100" y="98" font-size="26" font-weight="700">${fmt(total)}</text><text x="100" y="118" font-size="11" fill="#8A7FA3" style="fill:#8A7FA3">alunos</text>`;
+  const donut = document.getElementById('ncDonut');
+  donut.innerHTML = svg; donut.classList.toggle('has-active', hasActive);
+  donut.querySelectorAll('.seg').forEach(el => {
+    el.addEventListener('click', () => ncSetConcl(el.dataset.k));
+    el.addEventListener('keydown', e => { if(e.key==='Enter' || e.key===' '){ e.preventDefault(); ncSetConcl(el.dataset.k); } });
+  });
+  const leg = document.getElementById('ncLegend');
+  leg.innerHTML = bands.map(b => `<button type="button" data-k="${b.k}" class="${ncF.concl===b.k?'on':''}">
+      <span class="sw" style="background:${b.color}"></span><span>${b.label}</span><span class="v">${fmt(b.n)}</span><span class="pc">${pct(b.n,total)}</span></button>`).join('');
+  leg.querySelectorAll('button').forEach(el => el.addEventListener('click', () => ncSetConcl(el.dataset.k)));
+
+  /* 2) situacao geral */
+  const c1 = pool.filter(r => r.cc >= 1).length;
+  const c2 = pool.filter(r => r.cc === 0 && r.cp >= 1).length;
+  const c3 = pool.filter(r => r.cc === 0 && r.cp === 0).length;
+  const sit = [
+    { n:c1, color:'var(--success)', label:'Concluíram pelo menos 1 curso' },
+    { n:c2, color:'var(--warn)',    label:'Só em andamento (nenhum concluído)' },
+    { n:c3, color:'var(--track)',   label:'Não iniciaram nenhum curso' },
+  ];
+  document.getElementById('ncStack').innerHTML = sit.map(s => `<div style="width:${total ? s.n/total*100 : 0}%;background:${s.color}" title="${s.label}: ${fmt(s.n)}"></div>`).join('');
+  document.getElementById('ncSit').innerHTML = sit.map(s => `<div class="it" style="border-left-color:${s.color}"><div class="n">${fmt(s.n)} <span style="font-size:12px;color:var(--muted);font-weight:600">${pct(s.n,total)}</span></div><div class="l">${s.label}</div></div>`).join('');
+
+  /* 3) por estado */
+  const byE = {};
+  pool.forEach(r => { const e = r.estado || '—'; (byE[e] = byE[e] || {t:0,b1:0,b2:0,b3:0}).t++;
+    if(r.cc===1) byE[e].b1++; else if(r.cc===2) byE[e].b2++; else if(r.cc>=3) byE[e].b3++; });
+  const list = Object.entries(byE).map(([e,v]) => ({e, ...v, c: v.b1+v.b2+v.b3})).sort((a,b) => b.c - a.c);
+  const max = Math.max(1, ...list.map(x => x.c));
+  document.getElementById('ncEstBars').innerHTML = list.length ? list.map(x => `<div class="nc-est-row">
+      <div class="en" title="${x.e}">${x.e}</div>
+      <div class="bar" title="${x.e}: 1 curso ${x.b1} · 2 cursos ${x.b2} · 3 ou mais ${x.b3}">
+        <div style="width:${x.b1/max*100}%;background:#9BDDBD"></div><div style="width:${x.b2/max*100}%;background:#45C98A"></div><div style="width:${x.b3/max*100}%;background:var(--success)"></div></div>
+      <div class="nums"><b>${fmt(x.c)}</b> de ${fmt(x.t)} alunos (${pct(x.c,x.t)})</div></div>`).join('')
+    : '<div class="empty-state">Nenhum aluno para os filtros selecionados.</div>';
 }
 
 /* ---------- Init ---------- */
