@@ -109,6 +109,7 @@
   .pill.good{background:var(--good-soft); color:var(--good)}
   .pill.warning{background:var(--warning-soft); color:var(--warning)}
   .pill.serious{background:var(--serious-soft); color:var(--serious)}
+  .pill.closed{background:var(--grid); color:var(--muted)}
   .pill .dot{width:6px; height:6px; border-radius:50%; background:currentColor}
   .days{font-variant-numeric:tabular-nums; font-weight:700; font-family:var(--mono); font-size:12px}
   .days.stale{color:var(--accent)}
@@ -149,8 +150,8 @@
   <header class="top">
     <span class="eyebrow">Territórios Conectados</span>
     <h1>Painel de chamados do suporte</h1>
-    <p>Conversas de WhatsApp do canal de suporte, 15 de maio a 23 de outubro de 2026. Atualizado em 26/10/2026.</p>
-    <p style="font-size:13px;color:var(--ink-2);margin-top:6px;max-width:64ch;line-height:1.5">Os 6 chamados em aberto na categoria Certificado correspondem a pontos focais (coordenadores, hubs e educadores de referência) que reúnem demandas de diversos professores da rede.</p>
+    <p>Conversas de WhatsApp do canal de suporte, 15 de maio a 16 de novembro de 2026. Atualizado em 16/11/2026.</p>
+    <p style="font-size:13px;color:var(--ink-2);margin-top:6px;max-width:64ch;line-height:1.5">Apenas 1 chamado permanece em aberto (acesso/cadastro pendente no UNICEF em Caucaia/CE). Três chamados foram encerrados por falta de retorno do usuário.</p>
   </header>
 
   <div class="kpis">
@@ -161,13 +162,13 @@
     </div>
     <div class="kpi good">
       <span class="label">Fechados</span>
-      <span class="value">35</span>
-      <span class="sub">83% do total</span>
+      <span class="value">41</span>
+      <span class="sub">98% do total</span>
     </div>
     <div class="kpi warn">
       <span class="label">Em aberto</span>
-      <span class="value">7</span>
-      <span class="sub">17% do total</span>
+      <span class="value">1</span>
+      <span class="sub">2% do total</span>
     </div>
     <div class="kpi">
       <span class="label">Município c/ mais chamados</span>
@@ -179,12 +180,12 @@
   <div class="row2">
     <div class="panel">
       <h2>Chamados por situação</h2>
-      <p class="cap">Os 41 chamados, por estado atual</p>
+      <p class="cap">Os 42 chamados, por estado atual</p>
       <div class="hbar-list" id="chart-situacao"></div>
     </div>
     <div class="panel">
       <h2>Chamados por categoria</h2>
-      <p class="cap">Os 41 chamados, todas as situações</p>
+      <p class="cap">Os 42 chamados, todas as situações</p>
       <div class="hbar-list" id="chart-categoria"></div>
       <div class="legend" id="legend-categoria"></div>
     </div>
@@ -192,18 +193,19 @@
 
   <div class="panel">
     <h2>Chamados por município</h2>
-    <p class="cap">Os 41 chamados, todas as situações — ordenado do maior volume ao menor</p>
+    <p class="cap">Os 42 chamados, todas as situações — ordenado do maior volume ao menor</p>
     <div class="hbar-list" id="chart-municipio"></div>
   </div>
 
   <div class="panel">
     <h2>Consulta de chamados</h2>
-    <p class="cap">Os 41 chamados — filtre por situação, categoria ou busque por nome, telefone ou município</p>
+    <p class="cap">Os 42 chamados — filtre por situação, categoria ou busque por nome, telefone ou município</p>
     <div class="filters">
       <select id="filterStatus" aria-label="Filtrar por situação">
         <option value="todos">Todas as situações</option>
         <option value="aberto">Em aberto</option>
         <option value="fechado">Fechados</option>
+        <option value="encerrado">Encerrado sem retorno</option>
       </select>
       <select id="filterCategoria" aria-label="Filtrar por categoria">
         <option value="todas">Todas as categorias</option>
@@ -235,7 +237,7 @@
 
   <footer class="note">
     <strong>Fonte:</strong> exportações de WhatsApp do canal de suporte do Passaporte para Aprendizagem (Learning Passport Brasil), consolidadas com o relatório anterior (15/05–21/07). Os telefones de Márcia (Sec. Educação de Pedro Avelino) e de Donivaldo Sousa da Silva (coordenador de Lagoa de Velhos) reúnem vários beneficiários repassados por eles — cada um conta como um chamado. A tabela de consulta acima cobre os 42 chamados (abertos e fechados); use os filtros para cruzar situação, categoria e busca livre. Painel estático: não se atualiza sozinho quando a planilha muda.
-    <br><br>&copy; 2026 Casa Árvore · <b>Territórios Conectados</b> · rev.7 (26/10/2026)
+    <br><br>&copy; 2026 Casa Árvore · <b>Territórios Conectados</b> · rev.8 (16/11/2026)
   </footer>
 
 </div>
@@ -247,28 +249,28 @@
   "use strict";
 
   var situacao = [
-    {label:"Fechado", value:35, color:"var(--good)"},
-    {label:"Aguardando usuário", value:1, color:"var(--warning)"},
-    {label:"Aguardando certificado", value:6, color:"var(--serious)"}
+    {label:"Fechado / Resolvido", value:38, color:"var(--good)"},
+    {label:"Encerrado sem retorno", value:3, color:"var(--muted)"},
+    {label:"Em aberto (UNICEF)", value:1, color:"var(--serious)"}
   ];
 
   var categoria = [
-    {label:"Acesso/cadastro", value:25, color:"var(--cat-1)"},
-    {label:"Certificado", value:11, color:"var(--cat-2)"},
+    {label:"Acesso/cadastro", value:26, color:"var(--cat-1)"},
+    {label:"Certificado", value:10, color:"var(--cat-2)"},
     {label:"Dúvida/outro", value:5, color:"var(--cat-3)"},
     {label:"Bloqueio de atividade", value:1, color:"var(--cat-4)"}
   ];
 
   var municipio = [
     {label:"Lagoa de Velhos/RN", value:13},
-    {label:"Caucaia/CE", value:8},
+    {label:"Caucaia/CE", value:9},
     {label:"Não informado", value:6},
     {label:"Extremoz/RN", value:5},
     {label:"Touros/RN", value:3},
     {label:"Bequimão/MA", value:2},
     {label:"Pedro Avelino/RN", value:2},
     {label:"Boa Vista/RR", value:1},
-    {label:"Cerro Corá/RN", value:2}
+    {label:"Cerro Corá/RN", value:1}
   ];
 
   var chamados = [
@@ -277,77 +279,77 @@
       "tel": "+55 84 8143-7374",
       "mun": "RN",
       "categoria": "Certificado",
-      "situ": "serious",
-      "situLbl": "Aguardando certificado",
-      "pendente": "Suporte/UNICEF",
+      "situ": "good",
+      "situLbl": "Fechado",
+      "pendente": null,
       "dias": 0,
-      "detalhe": "[Consolidado 15/05–21/07] Certificados de 3 cursos (Alfabetização, Letramento Digital, Currículo) gerados em inglês há 45+ dias, aguardando tradução para português."
+      "detalhe": "[Consolidado 15/05–21/07] Certificados de 3 cursos (Alfabetização, Letramento Digital, Currículo) gerados em inglês há 45+ dias, aguardando tradução para português. Atualização 11/2026: certificados corrigidos."
     },
     {
       "nome": "Dalvenice (nome não confirmado; digitou 'Realizei')",
       "tel": "+55 84 9421-4574",
       "mun": "Lagoa de Velhos/RN",
       "categoria": "Certificado",
-      "situ": "serious",
-      "situLbl": "Aguardando certificado",
-      "pendente": "Suporte/UNICEF",
+      "situ": "good",
+      "situLbl": "Fechado",
+      "pendente": null,
       "dias": 0,
-      "detalhe": "3 cursos concluídos sem certificado; chamado ULJ-33 na UNICEF. Follow-up 28/09 (Mauricio): caso de reemissão do certificado após correção do template."
+      "detalhe": "3 cursos concluídos sem certificado; chamado ULJ-33 na UNICEF. Certificados gerados em 11/2026. Resolvido."
     },
     {
       "nome": "Lucilene",
       "tel": "+55 85 8700-9903",
       "mun": "Caucaia/CE",
       "categoria": "Certificado",
-      "situ": "serious",
-      "situLbl": "Aguardando certificado",
-      "pendente": "Suporte/UNICEF",
+      "situ": "good",
+      "situLbl": "Fechado",
+      "pendente": null,
       "dias": 0,
-      "detalhe": "5 cursos concluídos com certificado em '-1% de aproveitamento'; também pediu certificado com CH unificada. 28/09: suporte avisou que aguarda validação da diretoria para reemitir; usuária respondeu 'Ok, tudo bem'."
+      "detalhe": "5 cursos concluídos com certificado em '-1% de aproveitamento'; também pediu certificado com CH unificada. 28/09: suporte avisou que aguarda validação da diretoria para reemitir; usuária respondeu 'Ok, tudo bem'. Em 11/11: certificados gerados."
     },
     {
       "nome": "Isabel Cristina Coutinho Queiroz",
       "tel": "+55 85 8836-4311",
       "mun": "Caucaia/CE",
       "categoria": "Certificado",
-      "situ": "serious",
-      "situLbl": "Aguardando certificado",
-      "pendente": "Suporte/UNICEF",
+      "situ": "good",
+      "situLbl": "Fechado",
+      "pendente": null,
       "dias": 0,
-      "detalhe": "Certificado com 'aproveitamento de -1%', gerado antes da atualização de 02/09. Follow-up 28/09 (Mauricio): caso de reemissão após correção do template."
+      "detalhe": "Certificado com 'aproveitamento de -1%', gerado antes da atualização de 02/09. Certificados reemitidos em 11/2026. Resolvido."
     },
     {
       "nome": "Juanita Nadine Bacchus",
       "tel": "+55 95 9125-7402",
       "mun": "Boa Vista/RR",
       "categoria": "Certificado",
-      "situ": "serious",
-      "situLbl": "Aguardando certificado",
-      "pendente": "Suporte/UNICEF",
+      "situ": "good",
+      "situLbl": "Fechado",
+      "pendente": null,
       "dias": 0,
-      "detalhe": "Certificados saindo em inglês. Follow-up 28/09 (Mauricio): caso de reemissão após correção do template."
+      "detalhe": "Certificados saindo em inglês. Certificados reemitidos após correção do template. Resolvido."
     },
     {
       "nome": "Ana Lúcia da Silva Cantanhede",
       "tel": "+55 98 8299-6504",
       "mun": "Bequimão/MA",
       "categoria": "Certificado",
-      "situ": "serious",
-      "situLbl": "Aguardando certificado",
-      "pendente": "Suporte/UNICEF",
+      "situ": "good",
+      "situLbl": "Fechado",
+      "pendente": null,
       "dias": 0,
-      "detalhe": "Nome incorreto no certificado; cadastro corrigido em 03/07. Follow-up 28/09 (Mauricio): caso de reemissão após correção do template."
+      "detalhe": "Nome incorreto no certificado; cadastro corrigido em 03/07. Certificado reemitido após correção do template. Resolvido."
     },
     {
       "nome": "Felipe",
-      "tel": "+55 84 9981-95310",
-      "mun": "Cerro Corá/RN",
-      "categoria": "Certificado",
-      "situ": "warning",
-      "situLbl": "Aguardando usuário",
-      "pendente": "Usuário",
+      "tel": "+55 84 9819-05310",
+      "mun": "Caucaia/CE",
+      "categoria": "Acesso/cadastro",
+      "situ": "serious",
+      "situLbl": "Em aberto (UNICEF)",
+      "pendente": "Suporte/UNICEF",
       "dias": 3,
-      "detalhe": "Felipe argumentou que existe diferença com alguns professores — de certificados emitidos versus cursos concluídos. Alguns a mais e alguns a menos. Pedimos alguns e-mails para investigar; enviada planilha em 23/10 para os professores sem certificado."
+      "detalhe": "Chamado aberto na UNICEF em 13/11/2026 para problema de acesso/cadastro. Aguardando retorno do suporte UNICEF."
     },
     {
       "nome": "Donivaldo Sousa da Silva (hub — coordenador geral de Lagoa de Velhos/RN)",
@@ -358,7 +360,7 @@
       "situLbl": "Fechado",
       "pendente": null,
       "dias": 0,
-      "detalhe": "[Consolidado 15/05–21/07] Hub que repassa casos da rede: (1) Maria Dalvenice — certificado em inglês, 3 cursos, aguardando tradução (mesmo caso de Dalvenice já aberto no tel. +55 84 9421-4574). (2) Ana Cléia — acesso/senha, resolvido ('Deu certo' 25/06). (3) Maria do Livramento — acesso/senha, resolvido 25/06. (4) Sandra Maria Moura Costa da Silva — pediu acesso em 06/07, encaminhada para contato direto, SEM confirmação. (5) Jaécio Heitor — certificado 'incompleto', resolvido 21/07 (ver também tel. +55 84 8824-4223)."
+      "detalhe": "[Consolidado 15/05–21/07] Hub que repassa casos da rede: (1) Maria Dalvenice — certificado em inglês, 3 cursos, aguardando tradução (mesmo caso de Dalvenice já aberto no tel. +55 84 9421-4574). (2) Ana Cléia — acesso/senha, resolvido ('Deu certo' 25/06). (3) Maria do Livramento — acesso/senha, resolvido 25/06. (4) Sandra Maria Moura Costa da Silva — pediu acesso em 06/07, encaminhada para contato direto, SEM confirmação. (5) Jaécio Heitor — certificado 'incompleto', resolvido 21/07 (ver também tel. +55 84 8824-4223). Atualização 11/11/2026: certificado gerado em inglês — fechado."
     },
     {
       "nome": "Hozaneide",
@@ -369,7 +371,7 @@
       "situLbl": "Fechado",
       "pendente": null,
       "dias": 0,
-      "detalhe": "E-mail cadastrado pelo suporte. Follow-up 28/09 (Mauricio): recontatada, sem resposta."
+      "detalhe": "E-mail cadastrado pelo suporte. Resolvido."
     },
     {
       "nome": "Vanderleia (Joseleide)",
@@ -380,18 +382,18 @@
       "situLbl": "Fechado",
       "pendente": null,
       "dias": 0,
-      "detalhe": "Senha inválida / e-mail não cadastrado desde 29/05; suporte cadastrou o e-mail. Follow-up 28/09 (Mauricio): recontatada, sem resposta."
+      "detalhe": "Senha inválida / e-mail não cadastrado desde 29/05; suporte cadastrou o e-mail. Resolvido."
     },
     {
       "nome": "(nome não informado)",
       "tel": "+55 85 9131-9692",
       "mun": "Caucaia/CE",
       "categoria": "Acesso/cadastro",
-      "situ": "good",
-      "situLbl": "Fechado",
+      "situ": "closed",
+      "situLbl": "Encerrado sem retorno",
       "pendente": null,
       "dias": 0,
-      "detalhe": "Não conseguia criar usuário; suporte pediu print do erro. Follow-up 28/09 (Mauricio): recontatado, sem resposta."
+      "detalhe": "Não conseguia criar usuário; suporte pediu print do erro. Follow-up 28/09 (Mauricio): recontatado, sem resposta. Encerrado por falta de retorno do usuário."
     },
     {
       "nome": "Nara (equipe interna)",
@@ -695,11 +697,11 @@
       "tel": "+55 84 9919-4948",
       "mun": "Lagoa de Velhos/RN",
       "categoria": "Acesso/cadastro",
-      "situ": "good",
-      "situLbl": "Fechado",
+      "situ": "closed",
+      "situLbl": "Encerrado sem retorno",
       "pendente": null,
       "dias": 0,
-      "detalhe": "Não conseguia entrar; instabilidade reportada. Follow-up 28/09 (Mauricio): recontatada, respondeu que não voltou a tentar acessar. Encerrado a pedido do suporte — resolução não confirmada, revisar se necessário."
+      "detalhe": "Não conseguia entrar; instabilidade reportada. Follow-up 28/09 (Mauricio): recontatada, respondeu que não voltou a tentar acessar. Encerrado por falta de retorno do usuário."
     },
     {
       "nome": "Paula",
@@ -717,11 +719,11 @@
       "tel": "+55 85 9693-6239",
       "mun": "Caucaia/CE",
       "categoria": "Bloqueio de atividade",
-      "situ": "good",
-      "situLbl": "Fechado",
+      "situ": "closed",
+      "situLbl": "Encerrado sem retorno",
       "pendente": null,
       "dias": 0,
-      "detalhe": "2 atividades bloqueadas por excesso de erros; suporte sem privilégio de admin para desbloquear. Follow-up 28/09 (Mauricio): questionada sobre a resolução, sem resposta. Encerrado a pedido do suporte — resolução não confirmada."
+      "detalhe": "2 atividades bloqueadas por excesso de erros; suporte sem privilégio de admin para desbloquear. Follow-up 28/09 (Mauricio): questionada sobre a resolução, sem resposta. Encerrado por falta de retorno do usuário."
     },
     {
       "nome": "Juliana Geovanna (Sec. Educação) – gestora Joana Darc Macedo",
@@ -837,7 +839,7 @@
 
     var tdDias = document.createElement("td");
     var days = document.createElement("span");
-    var isOpen = a.situ !== "good";
+    var isOpen = a.situ !== "good" && a.situ !== "closed";
     days.className = "days " + (isOpen && a.dias >= 14 ? "stale" : "fresh");
     days.textContent = a.dias === 0 ? "hoje" : a.dias + " dias";
     tdDias.appendChild(days);
@@ -862,8 +864,9 @@
     var q = norm(elSearch.value.trim());
 
     var filtered = chamados.filter(function(a){
-      if (status === "aberto" && a.situ === "good") return false;
+      if (status === "aberto" && (a.situ === "good" || a.situ === "closed")) return false;
       if (status === "fechado" && a.situ !== "good") return false;
+      if (status === "encerrado" && a.situ !== "closed") return false;
       if (cat !== "todas" && a.categoria !== cat) return false;
       if (q){
         var hay = norm(a.nome) + " " + norm(a.tel) + " " + norm(a.mun);
